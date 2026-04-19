@@ -15,14 +15,19 @@ app.post("/chat", async (req, res) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "gpt-4.1-mini",
-        input: userMessage
-      })
+  model: "gpt-4.1-mini",
+  input: [
+    {
+      role: "user",
+      content: userMessage
+    }
+  ]
+})
     });
 
     const data = await response.json();
 
-    const reply = data.output?.[0]?.content?.[0]?.text || "ไม่มีคำตอบ";
+    const reply = data.output_text || "ไม่มีคำตอบ";
 
     res.json({ reply });
 
