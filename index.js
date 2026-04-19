@@ -6,7 +6,7 @@ app.use(cors());
 app.use(express.json());
 
 app.post("/chat", async (req, res) => {
-  const userMessage = req.body.message;
+  const memory = req.body.memory;
 
   try {
     const response = await fetch("https://api.openai.com/v1/responses", {
@@ -17,12 +17,7 @@ app.post("/chat", async (req, res) => {
       },
       body: JSON.stringify({
   model: "gpt-4.1-mini",
-  input: [
-    {
-      role: "user",
-      content: userMessage
-    }
-  ]
+  input: memory
 })
     });
 
