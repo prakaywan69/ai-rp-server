@@ -27,7 +27,9 @@ app.post("/chat", async (req, res) => {
 
     const data = await response.json();
 
-    const reply = data.output_text || "ไม่มีคำตอบ";
+    const reply =
+  data.output?.[0]?.content?.[0]?.text ||
+  "ไม่มีคำตอบ";
 
     res.json({ reply });
 
