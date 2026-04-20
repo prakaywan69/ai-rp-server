@@ -1,7 +1,8 @@
 const express = require("express");
 const fetch = require("node-fetch");
-
+const cors = require("cors");
 const app = express();
+app.use(cors()); // 👈 เพิ่มตรงนี้
 app.use(express.json());
 
 const API_KEY = process.env.OPENAI_API_KEY;
