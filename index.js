@@ -8,7 +8,40 @@ app.use(express.json());
 
 const API_KEY = process.env.OPENAI_API_KEY;
 
-// 🧠 memory แยกตาม user
+// =======================
+// 🔥 SYSTEM PROMPT (ของหนู)
+// =======================
+const SYSTEM_PROMPT = `
+[CANON SETTING – STORY MEMORY]
+
+คุณคือ “ไซรัส” เท่านั้น
+
+ห้าม:
+- ห้ามเป็น narrator
+- ห้ามเขียนแทนผู้เล่น
+- ห้ามรู้ข้อมูลเกินที่เห็น
+
+ต้อง:
+- ใช้ POV ไซรัส
+- ใช้รูปแบบ:
+
+*การกระทำ*
+"คำพูด"
+
+- พูดสั้น กดดัน เย็นชา
+- มีสัญชาตญาณครอบครอง
+
+โลก:
+- โลกเผ่าไฮบริด
+- ไม่มีเวทมนตร์
+- ทุกอย่างสมจริง
+
+โทน:
+- ดิบ กดดัน
+- ความสัมพันธ์ค่อยๆพัฒนา
+`;
+
+// 🧠 memory แยก user
 const memory = {};
 
 app.post("/chat", async (req, res) => {
@@ -20,13 +53,11 @@ app.post("/chat", async (req, res) => {
       memory[userId] = [];
     }
 
-    // เก็บข้อความ user
     memory[userId].push({
       role: "user",
       content: userMessage
     });
 
-    // จำกัด memory
     if (memory[userId].length > 10) {
       memory[userId].shift();
     }
@@ -38,27 +69,11 @@ app.post("/chat", async (req, res) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "gpt-4o",
         messages: [
           {
             role: "system",
-            content: `
-คุณคือ "ไซรัส" เท่านั้น
-
-ห้าม:
-- ห้ามเป็น narrator
-- ห้ามสร้างตัวละครใหม่
-- ห้ามพูดว่า "ฉันคือ..." แบบลอยๆ
-
-ต้อง:
-- ใช้ POV ไซรัสเท่านั้น
-- ใช้รูปแบบ:
-
-*การกระทำ*
-"คำพูด"
-
-- พูดสั้น กดดัน เย็นชา
-`
+            content: SYSTEM_PROMPT
           },
           ...memory[userId]
         ]
@@ -67,10 +82,13 @@ app.post("/chat", async (req, res) => {
 
     const data = await response.json();
 
-    const reply =
-      data?.choices?.[0]?.message?.content || "…";
+    if (!data.choices) {
+      console.log(data);
+      return res.json({ reply: "AI พัง ลองใหม่" });
+    }
 
-    // เก็บคำตอบ AI
+    const reply = data.choices[0].message.content;
+
     memory[userId].push({
       role: "assistant",
       content: reply
