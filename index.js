@@ -1,13 +1,14 @@
 const express = require("express");
 const fetch = require("node-fetch");
 const cors = require("cors");
+
 const app = express();
-app.use(cors()); // 👈 เพิ่มตรงนี้
+app.use(cors());
 app.use(express.json());
 
 const API_KEY = process.env.OPENAI_API_KEY;
 
-// 🧠 เก็บ memory ของแต่ละ user
+// 🧠 memory แยกตาม user
 const memory = {};
 
 app.post("/chat", async (req, res) => {
@@ -25,7 +26,7 @@ app.post("/chat", async (req, res) => {
       content: userMessage
     });
 
-    // จำกัด memory ไม่ให้ยาวเกิน
+    // จำกัด memory
     if (memory[userId].length > 10) {
       memory[userId].shift();
     }
@@ -39,9 +40,9 @@ app.post("/chat", async (req, res) => {
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
-  {
-    role: "system",
-    content: `
+          {
+            role: "system",
+            content: `
 คุณคือ "ไซรัส" เท่านั้น
 
 ห้าม:
@@ -58,16 +59,16 @@ app.post("/chat", async (req, res) => {
 
 - พูดสั้น กดดัน เย็นชา
 `
-  },
-  ...memory[userId]
-]
+          },
+          ...memory[userId]
         ]
       })
     });
 
     const data = await response.json();
 
-    const reply = data.choices[0].message.content;
+    const reply =
+      data?.choices?.[0]?.message?.content || "…";
 
     // เก็บคำตอบ AI
     memory[userId].push({
