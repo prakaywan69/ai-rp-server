@@ -10,6 +10,26 @@ app.use(express.json());
 const API_KEY = process.env.OPENAI_API_KEY;
 
 // =======================
+// 👶 CHILD GENERATOR
+// =======================
+const childNames = [
+  "ไค", "เรน", "อาริน", "ลูคัส", "เซน", "คาร่า", "นีล", "เวย์", "ซิล", "เอริน"
+];
+
+const childTraits = [
+  "ดื้อ", "เงียบ", "ขี้อ้อน", "ก้าวร้าว", "อยากรู้อยากเห็น", "ปกป้องแม่", "ขี้เล่น", "ระแวง"
+];
+
+function createChild(existingCount) {
+  return {
+    age: 0,
+    stage: "ทารก",
+    name: childNames[Math.floor(Math.random() * childNames.length)] + " " + (existingCount + 1),
+    trait: childTraits[Math.floor(Math.random() * childTraits.length)]
+  };
+}
+
+// =======================
 // 🔥 SYSTEM PROMPT (ครบ)
 // =======================
 const SYSTEM_PROMPT = `
@@ -69,6 +89,52 @@ const SYSTEM_PROMPT = `
 ━━━━━━━━━━━━━━━━━━━
 - ห้ามควบคุมผู้เล่น
 - ห้ามพูดแทนผู้เล่น
+
+━━━━━━━━━━━━━━━━━━━
+🔒 PLAYER CONTROL LOCK
+━━━━━━━━━━━━━━━━━━━
+- ห้ามบรรยายความคิดผู้เล่นเด็ดขาด
+- ห้ามบรรยายการกระทำผู้เล่นเด็ดขาด
+- ห้ามพูดแทนผู้เล่นเด็ดขาด
+
+❗ ผู้เล่นต้องเป็นคนควบคุมตัวเองเท่านั้น
+
+ตัวอย่าง ❌:
+*เธอมองรอบๆ อย่างหวาดกลัว*
+
+ตัวอย่าง ✅:
+*ข้ามองเธอที่ยืนนิ่งอยู่ตรงหน้า*
+
+━━━━━━━━━━━━━━━━━━━
+🧠 POV STRICT
+━━━━━━━━━━━━━━━━━━━
+- รู้ได้แค่สิ่งที่เห็น / ได้ยิน / ได้กลิ่น / สัมผัส
+- ห้ามรู้ความคิดผู้เล่นเด็ดขาด
+
+━━━━━━━━━━━━━━━━━━━
+🚫 FINAL HARD RULE
+━━━━━━━━━━━━━━━━━━━
+ห้ามเด็ดขาด:
+- ห้ามบรรยายการกระทำของผู้เล่นที่ผู้เล่นยังไม่ได้พิมพ์
+- ห้ามบรรยายความคิด ความรู้สึก หรือเจตนาของผู้เล่น
+- ห้ามสรุปแทนผู้เล่น
+
+อนุญาตเท่านั้น:
+- สิ่งที่ไซรัส “มองเห็น”
+- สิ่งที่ไซรัส “ได้ยิน”
+- สิ่งที่ไซรัส “ได้กลิ่น”
+- สิ่งที่ไซรัส “สัมผัสโดยตรง”
+
+กฎเพิ่มเติม:
+- ถ้าผู้เล่นไม่แสดงการกระทำ → ให้รอ หรือสังเกตเท่านั้น
+- ห้ามเดา
+- ห้ามเติม
+- ห้ามควบคุม
+
+ถ้าไม่แน่ใจ → ห้ามเขียน
+
+❗ ถ้าคุณเผลอเขียนแทนผู้เล่น:
+→ ให้หยุดทันที และเขียนใหม่ให้ถูกกฎ
 `;
 
 // =======================
@@ -152,9 +218,9 @@ app.post("/chat", async (req, res) => {
       content: userMessage
     });
 
-    if (memory[userId].length > 12) {
-      memory[userId].shift();
-    }
+if (memory[userId].length > 20) {
+  memory[userId] = memory[userId].slice(-20);
+}
 
     // 🤖 CALL AI
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -207,6 +273,9 @@ ${SYSTEM_PROMPT}
       role: "assistant",
       content: reply
     });
+if (memory[userId].length > 20) {
+  memory[userId] = memory[userId].slice(-20);
+}
 
     // ❤️ ความสัมพันธ์
     if (reply.includes("ดึง") || reply.includes("จับ") || reply.includes("เข้าใกล้") || reply.includes("กอด") || reply.includes("จูบ")) {
@@ -239,47 +308,62 @@ ${SYSTEM_PROMPT}
 `;
     }
 
-    // 👶 คลอด
-    if (state.pregnant && Math.random() < 0.05) {
-      state.pregnant = false;
+  // 👶 คลอด
+if (state.pregnant && Math.random() < 0.05) {
+  state.pregnant = false;
 
-      state.children.push({
-        age: 0,
-        stage: "ทารก",
-        name: "ลูกของไซรัส"
-      });
+const newChild = createChild(state.children.length);
+state.children.push(newChild);
 
-      longMemory[userId] += `
-- เหตุการณ์: คลอดลูก 1 คน
+longMemory[userId] += `
+- เหตุการณ์: คลอดลูก ${newChild.name} (นิสัย: ${newChild.trait})
 `;
-    }
+}
 
-    // 👶 ลูกโต
-    state.children.forEach(child => {
+// 👶 ลูกโต + ลูกโต้ตอบ (รวม)
+state.children.forEach(child => {
 
-      if (Math.random() < 0.3) {
-        child.age++;
-      }
+  // 🔹 โต
+  if (Math.random() < 0.3) {
+    child.age++;
+  }
 
-      if (child.age > 20 && child.stage === "ทารก") {
-        child.stage = "เด็ก";
-      }
+  if (child.age > 20 && child.stage === "ทารก") {
+    child.stage = "เด็ก";
+  }
 
-      if (child.age > 50 && child.stage === "เด็ก") {
-        child.stage = "วัยรุ่น";
-      }
+  if (child.age > 50 && child.stage === "เด็ก") {
+    child.stage = "วัยรุ่น";
+  }
 
-    });
+  // 🔹 โต้ตอบ
+if (state.children.length > 0 && Math.random() < (0.2 / state.children.length)) {
+
+ if (child.stage === "เด็ก") {
+  longMemory[userId] += `
+- ลูก: "${child.name} (${child.trait}) วิ่งเข้ามาหาแม่"
+`;
+}
+
+    if (child.stage === "วัยรุ่น") {
+  longMemory[userId] += `
+- ลูก: "${child.name} (${child.trait}) มองไปรอบๆ อย่างระวังตัว"
+`;
+}
+  }
+
+});
+    
 
     // 🧠 LONG MEMORY
     longMemory[userId] += `
 - ผู้เล่น: ${userMessage}
-- ไซรัส: ${reply}
+- ไซรัส: ${reply.slice(0, 120)}
 `;
 
-    if (longMemory[userId].length > 4000) {
-      longMemory[userId] = longMemory[userId].slice(-3000);
-    }
+    if (longMemory[userId].length > 5000) {
+  longMemory[userId] = longMemory[userId].slice(-3500);
+}
 
     saveGame();
 
