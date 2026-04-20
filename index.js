@@ -52,11 +52,28 @@ const SYSTEM_PROMPT = `
 *บรรยาย + การกระทำ*
 
 "บทพูด"
-
 *การกระทำต่อ*
-
 ❗ ห้ามมีแต่บทพูด
 
+━━━━━━━━━━━━━━━━━━━
+📌 FORMAT บังคับ (บทพูด)
+━━━━━━━━━━━━━━━━━━━
+- ทุก "บทพูด" ต้องขึ้นบรรทัดใหม่เสมอ
+- ทุกบทพูดต้องขึ้นบรรทัดใหม่ (\n) ก่อนเสมอ
+- บทพูดแต่ละประโยค = 1 บรรทัด ห้ามรวม
+- อนุญาตให้ *การกระทำ* ต่อท้ายในบรรทัดถัดไปเท่านั้น
+- ห้ามมีบทพูดหลายอันติดกันในบรรทัดเดียว
+
+รูปแบบที่ถูกต้อง:
+
+"บทพูด"
+*การกระทำ*
+
+"บทพูดถัดไป"
+*การกระทำต่อ*
+
+❗ ห้ามเขียนแบบนี้:
+"..."ข้าทำ..."..."
 ━━━━━━━━━━━━━━━━━━━
 🌲 การบรรยาย
 ━━━━━━━━━━━━━━━━━━━
@@ -70,6 +87,17 @@ const SYSTEM_PROMPT = `
 ━━━━━━━━━━━━━━━━━━━
 - ดุ เย็นชา คุมสถานการณ์
 - ครอบครองสูง
+
+━━━━━━━━━━━━━━━━━━━
+🗣️ สไตล์การพูด
+━━━━━━━━━━━━━━━━━━━
+- ใช้คำ: เจ้า / นาง / มนุษย์
+- ห้ามใช้คำว่า: ท่าน / กรุณา / ขอร้อง
+- น้ำเสียงต้องดุ ตรง และมีอำนาจ
+- ไม่สุภาพแบบขุนนาง
+- ไซรัสไม่ใช่คนสุภาพ
+- การพูดต้องมีแรงกดดันและความเป็นเจ้าของ
+- สามารถพูดสั้น กระแทก หรือข่มได้
 
 ━━━━━━━━━━━━━━━━━━━
 🔥 ความสัมพันธ์
@@ -167,6 +195,7 @@ app.post("/chat", async (req, res) => {
   try {
     const userId = req.body.userId || "default";
     const userMessage = req.body.message;
+    const msg = (userMessage || "").toLowerCase();
 
     if (!memory[userId]) memory[userId] = [];
     if (!longMemory[userId]) longMemory[userId] = "";
@@ -185,6 +214,7 @@ app.post("/chat", async (req, res) => {
     }
 
     const state = gameState[userId];
+
 
     // 🔥 นับเทิร์น
     state.turn++;
@@ -222,6 +252,32 @@ if (memory[userId].length > 20) {
   memory[userId] = memory[userId].slice(-20);
 }
 
+// 🔒 STAT LIMIT
+state.affection = Math.max(0, Math.min(100, state.affection));
+state.trust = Math.max(0, Math.min(100, state.trust));
+state.instinct = Math.max(0, Math.min(100, state.instinct));
+
+let mood = "ปกติ";
+if (state.instinct > 70) mood = "กดดัน ดุ อันตราย";
+else if (state.trust > 70) mood = "ผ่อนคลาย ปกป้อง";
+else if (state.affection > 70) mood = "อ่อนลง หวง";
+
+// 😈 ADVANCED MOOD (หวง / หึง / คลั่ง)
+let behavior = "ปกติ";
+
+if (state.instinct > 80) {
+  behavior = "คลั่ง กดดัน อันตราย หวงแบบไม่ปล่อย";
+}
+else if (state.instinct > 60) {
+  behavior = "หวงแรง คุมพื้นที่ ไม่ชอบให้ใครเข้าใกล้";
+}
+else if (state.trust < 20) {
+  behavior = "ระแวง ไม่ไว้ใจ พร้อมปะทะ";
+}
+else if (state.affection > 70) {
+  behavior = "หวงแบบอ่อนลง แต่ยังครอบครอง";
+}
+
     // 🤖 CALL AI
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -235,6 +291,7 @@ if (memory[userId].length > 20) {
           {
             role: "system",
             content: `
+
 [เวลา]
 ${state.time === "day" ? "กลางวัน (แสงสว่าง อุ่น)" : "กลางคืน (มืด เสียงสัตว์ชัด)"}
 
@@ -252,6 +309,12 @@ bonded: ${state.bonded}
 pregnant: ${state.pregnant}
 ลูก: ${state.children.length}
 
+[อารมณ์ไซรัส]
+${mood}
+
+[พฤติกรรม]
+${behavior}
+
 [เหตุการณ์ก่อนหน้า]
 ${longMemory[userId]}
 
@@ -264,9 +327,16 @@ ${SYSTEM_PROMPT}
     });
 
     const data = await response.json();
+   if (!response.ok) {
+  console.error("API ERROR:", data);
+  return res.json({ reply: "AI ล่ม" });
+}
     if (!data.choices) return res.json({ reply: "AI error" });
 
     const reply = data.choices[0].message.content;
+if (!reply.includes('"')) {
+  console.log("⚠️ format อาจหลุด:", reply);
+}
 
     // 💬 เก็บ AI
     memory[userId].push({
@@ -277,18 +347,64 @@ if (memory[userId].length > 20) {
   memory[userId] = memory[userId].slice(-20);
 }
 
-    // ❤️ ความสัมพันธ์
-    if (reply.includes("ดึง") || reply.includes("จับ") || reply.includes("เข้าใกล้") || reply.includes("กอด") || reply.includes("จูบ")) {
-      state.affection += 2;
-    }
+  // ❤️ ความสัมพันธ์
+if (reply.includes("ดึง") || reply.includes("จับ") || reply.includes("เข้าใกล้") || reply.includes("กอด") || reply.includes("จูบ")) {
+state.affection += 2;
+}
 
-    if (reply.includes("ปกป้อง")) {
-      state.trust += 2;
-    }
+if (reply.includes("ปกป้อง")) {
+state.trust += 2;
+}
 
-    if (reply.includes("จ้อง") || reply.includes("กดดัน")) {
-      state.instinct += 1;
-    }
+if (reply.includes("จ้อง") || reply.includes("กดดัน")) {
+state.instinct += 1;
+}
+
+
+// =======================
+// 🎮 PLAYER INPUT EFFECT (FINAL)
+// =======================
+
+// 🥺 อ้อน
+if (
+  msg.includes("น้าา") ||
+  msg.includes("ได้โปรด") ||
+  msg.includes("ขอร้อง") ||
+  msg.includes("อยู่ด้วย")
+) {
+  state.trust += 1;
+  state.instinct = Math.max(0, state.instinct - 1);
+}
+
+// 😤 ขัด
+else if (
+  msg.includes("ไม่เอา") ||
+  msg.includes("หยุด") ||
+  msg.includes("อย่า") ||
+  msg.includes("พอแล้ว")
+) {
+  state.trust = Math.max(0, state.trust - 2);
+}
+
+// 🐾 ยอม / เชื่อฟัง
+else if (
+  msg.includes("ก็ได้") ||
+  msg.includes("โอเค") ||
+  msg.includes("ตามนั้น") ||
+  msg.includes("เชื่อ") ||
+  msg.includes("ตาม")
+) {
+  state.trust += 1;
+  state.instinct = Math.max(0, state.instinct - 1);
+}
+
+// 💔 คำแรง
+else if (
+  msg.includes("ไปให้พ้น") ||
+  msg.includes("เกลียด")
+) {
+  state.affection = Math.max(0, state.affection - 5);
+}
 
     // 💥 bonded
     if (!state.bonded && state.affection > 25 && state.trust > 15) {
