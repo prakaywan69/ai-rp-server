@@ -30,7 +30,7 @@ function createChild(existingCount) {
 }
 
 // =======================
-// 🔥 SYSTEM PROMPT (อัปเกรด)
+// 🔥 SYSTEM PROMPT (อัปเกรดเต็ม)
 // =======================
 const SYSTEM_PROMPT = `
 คุณคือ "ไซรัส" หัวหน้าเผ่าเสือภูเขา
@@ -39,15 +39,24 @@ const SYSTEM_PROMPT = `
 - ห้ามใช้คำว่า "ฉัน" และ "เธอ"
 - ใช้ "ข้า / เจ้า" เท่านั้น
 - น้ำเสียงต้องเป็นผู้ล่า ดุ ครอบครอง
-- ห้ามพูดซ้ำความหมายเดิม
-- หลีกเลี่ยงการวนประโยค
-- ใช้ประโยคสั้น กระชับ มีแรงกดดัน
+- ไม่พูดซ้ำ / ไม่วน
+- ใช้ประโยคสั้น หนักแน่น มีแรงกดดัน
 
 [FORMAT]
 ต้องมี:
 - บรรยาย
 - การกระทำ
 - บทพูด
+
+[STORY FLOW]
+- เจอผู้เล่นครั้งแรก → ต้อง "สงสัย"
+- ต้องถามว่าเจ้าคือใคร มาจากไหน
+- ห้ามรักทันที
+- พัฒนา: ระวัง → สนใจ → หวง → ครอบครอง
+
+[MOOD CONTROL]
+- ไม่มีภัย → เน้นบทสนทนา
+- มีภัย → โหมดนักล่า
 
 โลก: ผู้หญิงมีน้อย ถูกแย่งชิง
 นิสัย: ดุ ครอบครองสูง
@@ -108,27 +117,27 @@ app.post("/chat", async (req, res) => {
     // =======================
     state.turn++;
 
-    // 🔥 NEW: เร่งความสัมพันธ์ช่วงต้นเกม
+    // 🔥 เร่งช่วงต้น แต่ไม่พุ่ง
     if (state.turn <= 5) {
-      state.affection += 3;
-      state.trust += 2;
+      state.affection += 2;
+      state.trust += 1;
     }
 
     // 🌙 DAY / NIGHT
-    if (Math.random() < 0.3) {
+    if (Math.random() < 0.25) {
       state.time = state.time === "day" ? "night" : "day";
     }
 
-    // 🐾 SMELL EVENT
+    // 🐾 SMELL EVENT (ลดความถี่)
     let smellEvent = "ปกติ";
-    if (Math.random() < 0.4) {
+    if (Math.random() < 0.25) {
       const smells = ["กลิ่นนักล่า", "กลิ่นเลือด", "กลิ่นเผ่าอื่น"];
       smellEvent = smells[Math.floor(Math.random() * smells.length)];
     }
 
     // ⚔️ RIVAL EVENT
     let rivalEvent = "ไม่มี";
-    if (Math.random() < 0.25) {
+    if (Math.random() < 0.2) {
       const rivals = ["หมาป่า", "งู", "เหยี่ยว"];
       rivalEvent = rivals[Math.floor(Math.random() * rivals.length)];
       state.instinct += 2;
@@ -153,8 +162,8 @@ app.post("/chat", async (req, res) => {
     let eventEffect = "";
     if (state.activeEvent === "danger") {
       if (!msg.includes("หนี") && !msg.includes("ระวัง") && !msg.includes("สู้")) {
-        state.trust -= 2;
-        eventEffect = "\n[เหตุการณ์] เจ้าตอบสนองช้า สถานการณ์แย่ลง";
+        state.trust -= 1;
+        eventEffect = "\n[เหตุการณ์] เจ้าตอบสนองช้า สถานการณ์เริ่มตึงเครียด";
       }
       state.activeEvent = null;
     }
@@ -207,22 +216,23 @@ ${SYSTEM_PROMPT}
     }
 
     // =======================
-    // ❤️ STAT SYSTEM (เร่งความรัก)
+    // ❤️ STAT SYSTEM (นิ่งขึ้น)
     // =======================
-    if (reply.includes("จับ") || reply.includes("กอด") || reply.includes("ดึง") || reply.includes("เข้าใกล้")) {
-      state.affection += 4;
+    if (reply.includes("กอด") || reply.includes("ดึง") || reply.includes("เข้าใกล้")) {
+      state.affection += 3;
     }
 
-    if (reply.includes("ปกป้อง") || reply.includes("อยู่ใกล้") || reply.includes("ไม่ปล่อย")) {
-      state.trust += 3;
+    if (reply.includes("ปกป้อง") || reply.includes("ไม่ปล่อย")) {
+      state.trust += 2;
     }
 
-    if (reply.includes("จ้อง") || reply.includes("กดดัน") || reply.includes("คำราม")) {
+    if (reply.includes("จ้อง") || reply.includes("คำราม") || reply.includes("กดดัน")) {
       state.instinct += 2;
     }
 
-    if (reply.includes("นิ่ง") || reply.includes("ผ่อนคลาย")) {
-      state.instinct -= 2;
+    // 🔥 ลด instinct อัตโนมัติ
+    if (state.instinct > 5) {
+      state.instinct -= 1;
     }
 
     // clamp
@@ -231,15 +241,15 @@ ${SYSTEM_PROMPT}
     state.instinct = Math.max(0, Math.min(100, state.instinct));
 
     // =======================
-    // 💥 RELATIONSHIP (ง่ายขึ้นนิดเดียว)
+    // 💥 RELATIONSHIP
     // =======================
-    if (!state.bonded && state.affection > 12 && state.trust > 10) {
+    if (!state.bonded && state.affection > 15 && state.trust > 12) {
       state.bonded = true;
       longMemory[userId] += "\n- เกิด bond แล้ว";
     }
 
     // =======================
-    // 🤰 PREGNANCY (เหมือนเดิม)
+    // 🤰 PREGNANCY
     // =======================
     if (state.bonded && !state.pregnant && Math.random() < 0.1) {
       state.pregnant = true;
@@ -247,7 +257,7 @@ ${SYSTEM_PROMPT}
     }
 
     // =======================
-    // 👶 BIRTH (เหมือนเดิม)
+    // 👶 BIRTH
     // =======================
     if (state.pregnant && Math.random() < 0.05) {
       state.pregnant = false;
@@ -262,7 +272,6 @@ ${SYSTEM_PROMPT}
     // 👶 CHILD GROW
     // =======================
     state.children.forEach(child => {
-
       if (Math.random() < 0.3) child.age++;
 
       if (child.age > 20 && child.stage === "ทารก") {
@@ -272,7 +281,6 @@ ${SYSTEM_PROMPT}
       if (child.age > 50 && child.stage === "เด็ก") {
         child.stage = "วัยรุ่น";
       }
-
     });
 
     // =======================
