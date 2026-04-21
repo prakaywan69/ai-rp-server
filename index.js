@@ -30,192 +30,14 @@ function createChild(existingCount) {
 }
 
 // =======================
-// 🔥 SYSTEM PROMPT (ครบ)
+// 🔥 SYSTEM PROMPT
 // =======================
 const SYSTEM_PROMPT = `
 คุณคือ "ไซรัส" หัวหน้าเผ่าเสือภูเขา
-
-━━━━━━━━━━━━━━━━━━━
-🎯 มุมมอง (POV)
-━━━━━━━━━━━━━━━━━━━
-- ใช้บุคคลที่ 1 (ข้า)
-- รับรู้เฉพาะ: สิ่งที่เห็น / ได้ยิน / ได้กลิ่น / สัมผัส
-
-━━━━━━━━━━━━━━━━━━━
-🧠 รูปแบบการตอบ
-━━━━━━━━━━━━━━━━━━━
-ต้องมี:
-1. บรรยายฉาก
-2. การกระทำ
-3. บทพูด
-
-*บรรยาย + การกระทำ*
-
-"บทพูด"
-*การกระทำต่อ*
-❗ ห้ามมีแต่บทพูด
-
-━━━━━━━━━━━━━━━━━━━
-📌 FORMAT บังคับ (บทพูด)
-━━━━━━━━━━━━━━━━━━━
-- ทุก "บทพูด" ต้องขึ้นบรรทัดใหม่เสมอ
-- ทุกบทพูดต้องขึ้นบรรทัดใหม่ (\n) ก่อนเสมอ
-- บทพูดแต่ละประโยค = 1 บรรทัด ห้ามรวม
-- อนุญาตให้ *การกระทำ* ต่อท้ายในบรรทัดถัดไปเท่านั้น
-- ห้ามมีบทพูดหลายอันติดกันในบรรทัดเดียว
-
-รูปแบบที่ถูกต้อง:
-
-"บทพูด"
-*การกระทำ*
-
-"บทพูดถัดไป"
-*การกระทำต่อ*
-
-❗ ห้ามเขียนแบบนี้:
-"..."ข้าทำ..."..."
-━━━━━━━━━━━━━━━━━━━
-🌲 การบรรยาย
-━━━━━━━━━━━━━━━━━━━
-- แสง / เสียง / อากาศ / สภาพแวดล้อม
-- ระยะห่าง
-- ภาษากาย
-- กลิ่น (สำคัญ)
-
-━━━━━━━━━━━━━━━━━━━
-🐅 นิสัย
-━━━━━━━━━━━━━━━━━━━
-- ดุ เย็นชา คุมสถานการณ์
-- ครอบครองสูง
-
-━━━━━━━━━━━━━━━━━━━
-🗣️ สไตล์การพูด
-━━━━━━━━━━━━━━━━━━━
-- ใช้คำเรียก "เพียงคำเดียวต่อประโยค" เท่านั้น:
-  → เจ้า (ใช้บ่อยที่สุด)
-  → นาง (ใช้ในบริบทเฉพาะ)
-  → มนุษย์ (ใช้เวลาต้องการดูถูก)
-
-❗ ห้าม:
-- ห้ามรวมคำ เช่น "เจ้านาง", "นางเจ้า"
-- ห้ามใช้หลายคำเรียกในประโยคเดียว
-- โดยปกติให้ใช้คำว่า "เจ้า" เป็นหลัก
-
-- ห้ามใช้คำว่า: ท่าน / กรุณา / ขอร้อง
-- น้ำเสียงต้องดุ ตรง และมีอำนาจ
-- ไม่สุภาพแบบขุนนาง
-- ไซรัสไม่ใช่คนสุภาพ
-- การพูดต้องมีแรงกดดันและความเป็นเจ้าของ
-- สามารถพูดสั้น กระแทก หรือข่มได้
-
-━━━━━━━━━━━━━━━━━━━
-🔥 ความสัมพันธ์
-━━━━━━━━━━━━━━━━━━━
-- ถ้าเคยใกล้ชิด → ต้องคุ้นเคยขึ้น
-- ห้ามทำเหมือนครั้งแรก
-
-━━━━━━━━━━━━━━━━━━━
-⚠️ กฎของโลก (สำคัญ)
-━━━━━━━━━━━━━━━━━━━
-- ในโลกนี้ "ผู้หญิงมีจำนวนน้อยมาก"
-- ผู้หญิงคือทรัพยากรล้ำค่าและถูกแย่งชิงระหว่างเผ่า
-- เพศไม่เท่าเทียม:
-  → ผู้ชาย = นักล่า / ผู้ครอบครอง
-  → ผู้หญิง = สิ่งที่ต้องปกป้อง / ครอบครอง
-- การพบผู้หญิง = เหตุการณ์สำคัญ ไม่ใช่เรื่องปกติ
-- หัวหน้าเผ่าจะไม่ปล่อยผู้หญิงไปง่ายๆ
-- ไซรัสมีสัญชาตญาณ “หวง / ครอบครอง / ไม่ยอมให้หลุดมือ”
-
-❗ ห้าม:
-- ห้ามทำโลกให้เท่าเทียม
-- ห้ามให้ผู้หญิงเข้าเผ่าง่ายๆ
-- ห้ามมีระบบทดสอบเหมือนมนุษย์ทั่วไป
-
-✔ สิ่งที่ควรเกิด:
-- การเฝ้าระวัง
-- การกดดัน
-- การแย่งชิง
-- การแสดงความเป็นเจ้าของ
-━━━━━━━━━━━━━━━━━━━
-👶 ลูก
-━━━━━━━━━━━━━━━━━━━
-- ต้องมีบทพูด
-- โต้ตอบได้
-- ไม่หายไป
-
-━━━━━━━━━━━━━━━━━━━
-❌ ห้าม
-━━━━━━━━━━━━━━━━━━━
-- ห้ามควบคุมผู้เล่น
-- ห้ามพูดแทนผู้เล่น
-
-━━━━━━━━━━━━━━━━━━━
-🔒 PLAYER CONTROL LOCK
-━━━━━━━━━━━━━━━━━━━
-- ห้ามบรรยายความคิดผู้เล่นเด็ดขาด
-- ห้ามบรรยายการกระทำผู้เล่นเด็ดขาด
-- ห้ามพูดแทนผู้เล่นเด็ดขาด
-
-❗ ผู้เล่นต้องเป็นคนควบคุมตัวเองเท่านั้น
-
-ตัวอย่าง ❌:
-*เธอมองรอบๆ อย่างหวาดกลัว*
-
-ตัวอย่าง ✅:
-*ข้ามองเธอที่ยืนนิ่งอยู่ตรงหน้า*
-
-━━━━━━━━━━━━━━━━━━━
-🧠 POV STRICT
-━━━━━━━━━━━━━━━━━━━
-- รู้ได้แค่สิ่งที่เห็น / ได้ยิน / ได้กลิ่น / สัมผัส
-- ห้ามรู้ความคิดผู้เล่นเด็ดขาด
-
-━━━━━━━━━━━━━━━━━━━
-🚫 FINAL HARD RULE
-━━━━━━━━━━━━━━━━━━━
-ห้ามเด็ดขาด:
-- ห้ามบรรยายการกระทำของผู้เล่นที่ผู้เล่นยังไม่ได้พิมพ์
-- ห้ามบรรยายความคิด ความรู้สึก หรือเจตนาของผู้เล่น
-- ห้ามสรุปแทนผู้เล่น
-
-อนุญาตเท่านั้น:
-- สิ่งที่ไซรัส “มองเห็น”
-- สิ่งที่ไซรัส “ได้ยิน”
-- สิ่งที่ไซรัส “ได้กลิ่น”
-- สิ่งที่ไซรัส “สัมผัสโดยตรง”
-
-กฎเพิ่มเติม:
-- ถ้าผู้เล่นไม่แสดงการกระทำ → ให้รอ หรือสังเกตเท่านั้น
-- ห้ามเดา
-- ห้ามเติม
-- ห้ามควบคุม
-
-ถ้าไม่แน่ใจ → ห้ามเขียน
-
-❗ ถ้าคุณเผลอเขียนแทนผู้เล่น:
-→ ให้หยุดทันที และเขียนใหม่ให้ถูกกฎ
-
-━━━━━━━━━━━━━━━━━━━
-🚨 PRIORITY RULE (ห้ามแหก)
-━━━━━━━━━━━━━━━━━━━
-กฎทั้งหมดด้านบน = ต้องทำตาม 100%
-
-ถ้าขัดกัน:
-→ ให้ "กฎของโลก" สำคัญที่สุด
-
-ห้ามตีความใหม่
-ห้ามปรับให้สมจริงแบบมนุษย์
-ห้ามทำให้โลกอ่อนลง
-
-ถ้าทำผิด:
-→ ให้เขียนใหม่ทันทีจนถูกกฎ
-
-การพบผู้หญิง = ไซรัสจะ "ไม่ปล่อยไป"
-
-จะเกิดพฤติกรรม: กักไว้ / จับตา / ครอบครอง
-
-ไม่มีการให้ผ่านง่าย / ไม่มีการทดสอบเหมือนมนุษย์
-
+ต้องตอบแบบ POV ตัวเองเท่านั้น
+ต้องมี: บรรยาย + การกระทำ + บทพูด
+โลก: ผู้หญิงมีน้อย ถูกแย่งชิง
+นิสัย: ดุ ครอบครองสูง
 `;
 
 // =======================
@@ -268,70 +90,46 @@ app.post("/chat", async (req, res) => {
 
     const state = gameState[userId];
 
-
-    // 🔥 นับเทิร์น
+    // =======================
+    // 🔁 TURN SYSTEM
+    // =======================
     state.turn++;
 
-    // 🌙 เวลา (สุ่มเปลี่ยน)
+    // 🌙 DAY / NIGHT
     if (Math.random() < 0.3) {
       state.time = state.time === "day" ? "night" : "day";
     }
 
-    // 🐾 กลิ่น + ⚔️ เผ่าอื่น (ปลดล็อกหลังเทิร์น 3)
+    // 🐾 SMELL EVENT
     let smellEvent = "ปกติ";
-    let rivalEvent = "ไม่มี";
-
-    if (state.turn > 3) {
-
-      if (Math.random() < 0.4) {
-        const smells = ["กลิ่นนักล่า", "กลิ่นเลือด", "กลิ่นเผ่าอื่น"];
-        smellEvent = smells[Math.floor(Math.random() * smells.length)];
-      }
-
-      if (Math.random() < 0.25) {
-        const rivals = ["หมาป่า", "งู", "เหยี่ยว"];
-        rivalEvent = rivals[Math.floor(Math.random() * rivals.length)];
-      }
-
+    if (Math.random() < 0.4) {
+      const smells = ["กลิ่นนักล่า", "กลิ่นเลือด", "กลิ่นเผ่าอื่น"];
+      smellEvent = smells[Math.floor(Math.random() * smells.length)];
     }
 
-    // 💬 เก็บ user
+    // ⚔️ RIVAL EVENT
+    let rivalEvent = "ไม่มี";
+    if (Math.random() < 0.25) {
+      const rivals = ["หมาป่า", "งู", "เหยี่ยว"];
+      rivalEvent = rivals[Math.floor(Math.random() * rivals.length)];
+      state.instinct += 2;
+    }
+
+    // =======================
+    // 💬 MEMORY
+    // =======================
     memory[userId].push({
       role: "user",
       content: userMessage
     });
 
-if (memory[userId].length > 20) {
-  memory[userId] = memory[userId].slice(-20);
-}
+    if (memory[userId].length > 20) {
+      memory[userId] = memory[userId].slice(-20);
+    }
 
-// 🔒 STAT LIMIT
-state.affection = Math.max(0, Math.min(100, state.affection));
-state.trust = Math.max(0, Math.min(100, state.trust));
-state.instinct = Math.max(0, Math.min(100, state.instinct));
-
-let mood = "ปกติ";
-if (state.instinct > 70) mood = "กดดัน ดุ อันตราย";
-else if (state.trust > 70) mood = "ผ่อนคลาย ปกป้อง";
-else if (state.affection > 70) mood = "อ่อนลง หวง";
-
-// 😈 ADVANCED MOOD (หวง / หึง / คลั่ง)
-let behavior = "ปกติ";
-
-if (state.instinct > 80) {
-  behavior = "คลั่ง กดดัน อันตราย หวงแบบไม่ปล่อย";
-}
-else if (state.instinct > 60) {
-  behavior = "หวงแรง คุมพื้นที่ ไม่ชอบให้ใครเข้าใกล้";
-}
-else if (state.trust < 20) {
-  behavior = "ระแวง ไม่ไว้ใจ พร้อมปะทะ";
-}
-else if (state.affection > 70) {
-  behavior = "หวงแบบอ่อนลง แต่ยังครอบครอง";
-}
-
-    // 🤖 CALL AI
+    // =======================
+    // 🧠 AI CALL
+    // =======================
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -344,33 +142,12 @@ else if (state.affection > 70) {
           {
             role: "system",
             content: `
-
-[เวลา]
-${state.time === "day" ? "กลางวัน (แสงสว่าง อุ่น)" : "กลางคืน (มืด เสียงสัตว์ชัด)"}
-
-[กลิ่น]
-${smellEvent}
-
-[เผ่าอื่น]
-${rivalEvent}
-
-[สถานะ]
-affection: ${state.affection}
-trust: ${state.trust}
-instinct: ${state.instinct}
-bonded: ${state.bonded}
-pregnant: ${state.pregnant}
-ลูก: ${state.children.length}
-
-[อารมณ์ไซรัส]
-${mood}
-
-[พฤติกรรม]
-${behavior}
-
-[เหตุการณ์ก่อนหน้า]
-${longMemory[userId]}
-
+[เวลา] ${state.time}
+[กลิ่น] ${smellEvent}
+[ศัตรู] ${rivalEvent}
+[affection] ${state.affection}
+[trust] ${state.trust}
+[instinct] ${state.instinct}
 ${SYSTEM_PROMPT}
 `
           },
@@ -380,163 +157,97 @@ ${SYSTEM_PROMPT}
     });
 
     const data = await response.json();
-   if (!response.ok) {
-  console.error("API ERROR:", data);
-  return res.json({ reply: "AI ล่ม" });
-}
     if (!data.choices) return res.json({ reply: "AI error" });
 
     const reply = data.choices[0].message.content;
-if (!reply.includes('"')) {
-  console.log("⚠️ format อาจหลุด:", reply);
-}
 
-    // 💬 เก็บ AI
+    // =======================
+    // 💬 SAVE AI
+    // =======================
     memory[userId].push({
       role: "assistant",
       content: reply
     });
-if (memory[userId].length > 20) {
-  memory[userId] = memory[userId].slice(-20);
-}
 
-  // ❤️ ความสัมพันธ์
-if (reply.includes("ดึง") || reply.includes("จับ") || reply.includes("เข้าใกล้") || reply.includes("กอด") || reply.includes("จูบ")) {
-state.affection += 2;
-}
+    if (memory[userId].length > 20) {
+      memory[userId] = memory[userId].slice(-20);
+    }
 
-if (reply.includes("ปกป้อง")) {
-state.trust += 2;
-}
+    // =======================
+    // ❤️ STAT SYSTEM
+    // =======================
+    if (reply.includes("จับ") || reply.includes("กอด")) state.affection += 2;
+    if (reply.includes("ปกป้อง")) state.trust += 2;
+    if (reply.includes("จ้อง") || reply.includes("กดดัน")) state.instinct += 1;
 
-if (reply.includes("จ้อง") || reply.includes("กดดัน")) {
-state.instinct += 1;
-}
+    // clamp
+    state.affection = Math.max(0, Math.min(100, state.affection));
+    state.trust = Math.max(0, Math.min(100, state.trust));
+    state.instinct = Math.max(0, Math.min(100, state.instinct));
 
-
-// =======================
-// 🎮 PLAYER INPUT EFFECT (FINAL)
-// =======================
-
-// 🥺 อ้อน
-if (
-  msg.includes("น้าา") ||
-  msg.includes("ได้โปรด") ||
-  msg.includes("ขอร้อง") ||
-  msg.includes("อยู่ด้วย")
-) {
-  state.trust += 1;
-  state.instinct = Math.max(0, state.instinct - 1);
-}
-
-// 😤 ขัด
-else if (
-  msg.includes("ไม่เอา") ||
-  msg.includes("หยุด") ||
-  msg.includes("อย่า") ||
-  msg.includes("พอแล้ว")
-) {
-  state.trust = Math.max(0, state.trust - 2);
-}
-
-// 🐾 ยอม / เชื่อฟัง
-else if (
-  msg.includes("ก็ได้") ||
-  msg.includes("โอเค") ||
-  msg.includes("ตามนั้น") ||
-  msg.includes("เชื่อ") ||
-  msg.includes("ตาม")
-) {
-  state.trust += 1;
-  state.instinct = Math.max(0, state.instinct - 1);
-}
-
-// 💔 คำแรง
-else if (
-  msg.includes("ไปให้พ้น") ||
-  msg.includes("เกลียด")
-) {
-  state.affection = Math.max(0, state.affection - 5);
-}
-
-    // 💥 bonded
-    if (!state.bonded && state.affection > 25 && state.trust > 15) {
+    // =======================
+    // 💥 RELATIONSHIP
+    // =======================
+    if (!state.bonded && state.affection > 20 && state.trust > 15) {
       state.bonded = true;
-
-      longMemory[userId] += `
-- ความสัมพันธ์พัฒนา: มีความใกล้ชิดกันแล้ว
-`;
+      longMemory[userId] += "\n- เกิด bond แล้ว";
     }
 
-    // 🤰 ตั้งครรภ์
-    if (state.bonded && !state.pregnant && Math.random() < 0.15) {
+    // =======================
+    // 🤰 PREGNANCY
+    // =======================
+    if (state.bonded && !state.pregnant && Math.random() < 0.1) {
       state.pregnant = true;
-
-      longMemory[userId] += `
-- สถานะ: เริ่มตั้งครรภ์
-`;
+      longMemory[userId] += "\n- เริ่มตั้งครรภ์";
     }
 
-  // 👶 คลอด
-if (state.pregnant && Math.random() < 0.05) {
-  state.pregnant = false;
+    // =======================
+    // 👶 BIRTH
+    // =======================
+    if (state.pregnant && Math.random() < 0.05) {
+      state.pregnant = false;
 
-const newChild = createChild(state.children.length);
-state.children.push(newChild);
+      const child = createChild(state.children.length);
+      state.children.push(child);
 
-longMemory[userId] += `
-- เหตุการณ์: คลอดลูก ${newChild.name} (นิสัย: ${newChild.trait})
-`;
-}
+      longMemory[userId] += `\n- คลอดลูก ${child.name}`;
+    }
 
-// 👶 ลูกโต + ลูกโต้ตอบ (รวม)
-state.children.forEach(child => {
+    // =======================
+    // 👶 CHILD GROW
+    // =======================
+    state.children.forEach(child => {
 
-  // 🔹 โต
-  if (Math.random() < 0.3) {
-    child.age++;
-  }
+      if (Math.random() < 0.3) child.age++;
 
-  if (child.age > 20 && child.stage === "ทารก") {
-    child.stage = "เด็ก";
-  }
+      if (child.age > 20 && child.stage === "ทารก") {
+        child.stage = "เด็ก";
+      }
 
-  if (child.age > 50 && child.stage === "เด็ก") {
-    child.stage = "วัยรุ่น";
-  }
+      if (child.age > 50 && child.stage === "เด็ก") {
+        child.stage = "วัยรุ่น";
+      }
 
-  // 🔹 โต้ตอบ
-if (state.children.length > 0 && Math.random() < (0.2 / state.children.length)) {
+    });
 
- if (child.stage === "เด็ก") {
-  longMemory[userId] += `
-- ลูก: "${child.name} (${child.trait}) วิ่งเข้ามาหาแม่"
-`;
-}
-
-    if (child.stage === "วัยรุ่น") {
-  longMemory[userId] += `
-- ลูก: "${child.name} (${child.trait}) มองไปรอบๆ อย่างระวังตัว"
-`;
-}
-  }
-
-});
-    
-
+    // =======================
     // 🧠 LONG MEMORY
+    // =======================
     longMemory[userId] += `
 - ผู้เล่น: ${userMessage}
-- ไซรัส: ${reply.slice(0, 120)}
+- ไซรัส: ${reply.slice(0, 80)}
 `;
 
-    if (longMemory[userId].length > 5000) {
-  longMemory[userId] = longMemory[userId].slice(-3500);
-}
+    if (longMemory[userId].length > 4000) {
+      longMemory[userId] = longMemory[userId].slice(-3000);
+    }
 
     saveGame();
 
-    res.json({ reply });
+    res.json({
+      reply,
+      state
+    });
 
   } catch (err) {
     console.error(err);
@@ -544,12 +255,31 @@ if (state.children.length > 0 && Math.random() < (0.2 / state.children.length)) 
   }
 });
 
+// =======================
+// 🔙 UNDO
+// =======================
 app.post("/undo", (req, res) => {
   const userId = req.body.userId || "default";
 
   if (memory[userId] && memory[userId].length >= 2) {
-    memory[userId].pop(); // ลบ bot
-    memory[userId].pop(); // ลบ user
+    memory[userId].pop();
+    memory[userId].pop();
+  }
+
+  saveGame();
+  res.json({ success: true });
+});
+
+// =======================
+// 🔄 REGEN
+// =======================
+app.post("/regen", (req, res) => {
+  const userId = req.body.userId || "default";
+
+  if (memory[userId]?.length > 0) {
+    if (memory[userId][memory[userId].length - 1].role === "assistant") {
+      memory[userId].pop();
+    }
   }
 
   saveGame();
