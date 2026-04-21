@@ -97,7 +97,7 @@ app.post("/chat", async (req, res) => {
         children: [],
         time: "day",
         turn: 0,
-        activeEvent: null // 🔥 NEW
+        activeEvent: null
       };
     }
 
@@ -107,6 +107,12 @@ app.post("/chat", async (req, res) => {
     // 🔁 TURN SYSTEM
     // =======================
     state.turn++;
+
+    // 🔥 NEW: เร่งความสัมพันธ์ช่วงต้นเกม
+    if (state.turn <= 5) {
+      state.affection += 3;
+      state.trust += 2;
+    }
 
     // 🌙 DAY / NIGHT
     if (Math.random() < 0.3) {
@@ -120,7 +126,7 @@ app.post("/chat", async (req, res) => {
       smellEvent = smells[Math.floor(Math.random() * smells.length)];
     }
 
-    // ⚔️ RIVAL EVENT (มีผลจริง)
+    // ⚔️ RIVAL EVENT
     let rivalEvent = "ไม่มี";
     if (Math.random() < 0.25) {
       const rivals = ["หมาป่า", "งู", "เหยี่ยว"];
@@ -201,13 +207,20 @@ ${SYSTEM_PROMPT}
     }
 
     // =======================
-    // ❤️ STAT SYSTEM (ปรับสมดุล)
+    // ❤️ STAT SYSTEM (เร่งความรัก)
     // =======================
-    if (reply.includes("จับ") || reply.includes("กอด")) state.affection += 2;
-    if (reply.includes("ปกป้อง")) state.trust += 2;
-    if (reply.includes("จ้อง") || reply.includes("กดดัน")) state.instinct += 1;
+    if (reply.includes("จับ") || reply.includes("กอด") || reply.includes("ดึง") || reply.includes("เข้าใกล้")) {
+      state.affection += 4;
+    }
 
-    // 🔥 ลด instinct ถ้าสงบ
+    if (reply.includes("ปกป้อง") || reply.includes("อยู่ใกล้") || reply.includes("ไม่ปล่อย")) {
+      state.trust += 3;
+    }
+
+    if (reply.includes("จ้อง") || reply.includes("กดดัน") || reply.includes("คำราม")) {
+      state.instinct += 2;
+    }
+
     if (reply.includes("นิ่ง") || reply.includes("ผ่อนคลาย")) {
       state.instinct -= 2;
     }
@@ -218,15 +231,15 @@ ${SYSTEM_PROMPT}
     state.instinct = Math.max(0, Math.min(100, state.instinct));
 
     // =======================
-    // 💥 RELATIONSHIP
+    // 💥 RELATIONSHIP (ง่ายขึ้นนิดเดียว)
     // =======================
-    if (!state.bonded && state.affection > 20 && state.trust > 15) {
+    if (!state.bonded && state.affection > 12 && state.trust > 10) {
       state.bonded = true;
       longMemory[userId] += "\n- เกิด bond แล้ว";
     }
 
     // =======================
-    // 🤰 PREGNANCY
+    // 🤰 PREGNANCY (เหมือนเดิม)
     // =======================
     if (state.bonded && !state.pregnant && Math.random() < 0.1) {
       state.pregnant = true;
@@ -234,7 +247,7 @@ ${SYSTEM_PROMPT}
     }
 
     // =======================
-    // 👶 BIRTH
+    // 👶 BIRTH (เหมือนเดิม)
     // =======================
     if (state.pregnant && Math.random() < 0.05) {
       state.pregnant = false;
