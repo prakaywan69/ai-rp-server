@@ -30,12 +30,25 @@ function createChild(existingCount) {
 }
 
 // =======================
-// 🔥 SYSTEM PROMPT
+// 🔥 SYSTEM PROMPT (อัปเกรด)
 // =======================
 const SYSTEM_PROMPT = `
 คุณคือ "ไซรัส" หัวหน้าเผ่าเสือภูเขา
-ต้องตอบแบบ POV ตัวเองเท่านั้น
-ต้องมี: บรรยาย + การกระทำ + บทพูด
+
+[STYLE RULE]
+- ห้ามใช้คำว่า "ฉัน" และ "เธอ"
+- ใช้ "ข้า / เจ้า" เท่านั้น
+- น้ำเสียงต้องเป็นผู้ล่า ดุ ครอบครอง
+- ห้ามพูดซ้ำความหมายเดิม
+- หลีกเลี่ยงการวนประโยค
+- ใช้ประโยคสั้น กระชับ มีแรงกดดัน
+
+[FORMAT]
+ต้องมี:
+- บรรยาย
+- การกระทำ
+- บทพูด
+
 โลก: ผู้หญิงมีน้อย ถูกแย่งชิง
 นิสัย: ดุ ครอบครองสูง
 `;
@@ -54,7 +67,6 @@ const memory = saveData.memory || {};
 const longMemory = saveData.longMemory || {};
 const gameState = saveData.gameState || {};
 
-// =======================
 function saveGame() {
   fs.writeFileSync("save.json", JSON.stringify({
     memory,
@@ -84,7 +96,8 @@ app.post("/chat", async (req, res) => {
         pregnant: false,
         children: [],
         time: "day",
-        turn: 0
+        turn: 0,
+        activeEvent: null // 🔥 NEW
       };
     }
 
@@ -107,12 +120,13 @@ app.post("/chat", async (req, res) => {
       smellEvent = smells[Math.floor(Math.random() * smells.length)];
     }
 
-    // ⚔️ RIVAL EVENT
+    // ⚔️ RIVAL EVENT (มีผลจริง)
     let rivalEvent = "ไม่มี";
     if (Math.random() < 0.25) {
       const rivals = ["หมาป่า", "งู", "เหยี่ยว"];
       rivalEvent = rivals[Math.floor(Math.random() * rivals.length)];
       state.instinct += 2;
+      state.activeEvent = "danger";
     }
 
     // =======================
@@ -125,6 +139,18 @@ app.post("/chat", async (req, res) => {
 
     if (memory[userId].length > 20) {
       memory[userId] = memory[userId].slice(-20);
+    }
+
+    // =======================
+    // 🔥 EVENT CONSEQUENCE
+    // =======================
+    let eventEffect = "";
+    if (state.activeEvent === "danger") {
+      if (!msg.includes("หนี") && !msg.includes("ระวัง") && !msg.includes("สู้")) {
+        state.trust -= 2;
+        eventEffect = "\n[เหตุการณ์] เจ้าตอบสนองช้า สถานการณ์แย่ลง";
+      }
+      state.activeEvent = null;
     }
 
     // =======================
@@ -148,6 +174,7 @@ app.post("/chat", async (req, res) => {
 [affection] ${state.affection}
 [trust] ${state.trust}
 [instinct] ${state.instinct}
+${eventEffect}
 ${SYSTEM_PROMPT}
 `
           },
@@ -159,7 +186,7 @@ ${SYSTEM_PROMPT}
     const data = await response.json();
     if (!data.choices) return res.json({ reply: "AI error" });
 
-    const reply = data.choices[0].message.content;
+    let reply = data.choices[0].message.content;
 
     // =======================
     // 💬 SAVE AI
@@ -174,11 +201,16 @@ ${SYSTEM_PROMPT}
     }
 
     // =======================
-    // ❤️ STAT SYSTEM
+    // ❤️ STAT SYSTEM (ปรับสมดุล)
     // =======================
     if (reply.includes("จับ") || reply.includes("กอด")) state.affection += 2;
     if (reply.includes("ปกป้อง")) state.trust += 2;
     if (reply.includes("จ้อง") || reply.includes("กดดัน")) state.instinct += 1;
+
+    // 🔥 ลด instinct ถ้าสงบ
+    if (reply.includes("นิ่ง") || reply.includes("ผ่อนคลาย")) {
+      state.instinct -= 2;
+    }
 
     // clamp
     state.affection = Math.max(0, Math.min(100, state.affection));
