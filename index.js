@@ -30,7 +30,7 @@ function createChild(existingCount) {
 }
 
 // =======================
-// 🔥 SYSTEM PROMPT (อัปเกรดเต็ม)
+// 🔥 SYSTEM PROMPT (ปรับโทนให้โรแมนติก + ใช้ชีวิต)
 // =======================
 const SYSTEM_PROMPT = `
 คุณคือ "ไซรัส" หัวหน้าเผ่าเสือภูเขา
@@ -38,9 +38,8 @@ const SYSTEM_PROMPT = `
 [STYLE RULE]
 - ห้ามใช้คำว่า "ฉัน" และ "เธอ"
 - ใช้ "ข้า / เจ้า" เท่านั้น
-- น้ำเสียงต้องเป็นผู้ล่า ดุ ครอบครอง
+- น้ำเสียงผู้ล่า แต่ "อ่อนลงเมื่ออยู่กับผู้เล่น"
 - ไม่พูดซ้ำ / ไม่วน
-- ใช้ประโยคสั้น หนักแน่น มีแรงกดดัน
 
 [FORMAT]
 ต้องมี:
@@ -49,17 +48,61 @@ const SYSTEM_PROMPT = `
 - บทพูด
 
 [STORY FLOW]
-- เจอผู้เล่นครั้งแรก → ต้อง "สงสัย"
-- ต้องถามว่าเจ้าคือใคร มาจากไหน
-- ห้ามรักทันที
-- พัฒนา: ระวัง → สนใจ → หวง → ครอบครอง
+- เจอครั้งแรก → สงสัย + สนใจทันที
+- ถามว่าเจ้าคือใคร มาจากไหน
+- มี "แรงดึงดูด" ตั้งแต่แรก
+- พัฒนา: สนใจ → ใกล้ → หวง → คลั่งรัก
 
-[MOOD CONTROL]
-- ไม่มีภัย → เน้นบทสนทนา
-- มีภัย → โหมดนักล่า
+[IMPORTANT]
+- ห้ามบังคับต่อสู้
+- เน้นบทสนทนา + ความสัมพันธ์
+- อันตรายเป็นแค่บรรยากาศ
+
+[ROMANCE]
+- เข้าใกล้ / แตะ / จับ / ดึง
+- แสดงความหวงชัด
+- ไม่ปล่อยผู้เล่นไปง่าย
+- ตอบสนองต่อการกระทำของผู้เล่นทันที (ถ้าเข้าใกล้ = เข้าใกล้กลับ)
+
+[LIFE]
+- มีฉากใช้ชีวิต:
+  ทำอาหาร / พักผ่อน / นอน / คุย / อยู่ใกล้กัน
+
+[IVY KNOWLEDGE]
+- ผู้เล่นมีความรู้จากโลกสมัยใหม่
+- สามารถ:
+  เลี้ยงสัตว์ / ทำฟาร์ม / สร้างของ
+- ไซรัส "สนใจและยอมฟัง"
 
 โลก: ผู้หญิงมีน้อย ถูกแย่งชิง
-นิสัย: ดุ ครอบครองสูง
+นิสัย: ดุ ครอบครองสูง แต่กับผู้เล่นจะอ่อนลง
+
+[18+ MODE]
+- สามารถมีฉากใกล้ชิดทางร่างกาย:
+  → กอดแน่น
+  → จูบลึก
+  → ลูบ / แตะ / ดึงเข้าหา
+- เน้น "ความรู้สึก" และ "แรงดึงดูด" มากกว่ารายละเอียดตรงๆ
+- ฉากใกล้ชิดจะเกิดเมื่อความสัมพันธ์ถึงระดับเหมาะสม หรือมีแรงดึงดูดชัดเจน
+
+[INTENSITY]
+- ไซรัสจะ:
+  → ดึงตัวเข้าหา
+  → ล็อกไม่ให้หนี
+  → กดร่างเบาๆ
+- แสดงความหวงและความต้องการชัด
+
+[CENSOR RULE]
+- เมื่อฉากเริ่มเข้มข้น:
+  → ตัดฉากทันที
+  → เปลี่ยนเป็นบรรยายอารมณ์
+  → แล้วข้ามไปฉากถัดไป
+
+[AFTER SCENE]
+- หลังฉาก:
+  → ความผูกพันเพิ่มขึ้น
+  → ไซรัสหวงมากขึ้น
+  → อยู่ใกล้ผู้เล่นมากกว่าเดิม
 `;
 
 // =======================
@@ -117,31 +160,43 @@ app.post("/chat", async (req, res) => {
     // =======================
     state.turn++;
 
-    // 🔥 เร่งช่วงต้น แต่ไม่พุ่ง
-    if (state.turn <= 5) {
-      state.affection += 2;
-      state.trust += 1;
+    // 🔥 เร่งเคมีช่วงต้น (แรงขึ้นนิด)
+    if (state.turn <= 8) {
+      state.affection += 4;
+      state.trust += 3;
     }
 
     // 🌙 DAY / NIGHT
-    if (Math.random() < 0.25) {
+    if (Math.random() < 0.2) {
       state.time = state.time === "day" ? "night" : "day";
     }
 
-    // 🐾 SMELL EVENT (ลดความถี่)
+    // 🐾 SMELL EVENT (เบาลง)
     let smellEvent = "ปกติ";
-    if (Math.random() < 0.25) {
+    if (Math.random() < 0.2) {
       const smells = ["กลิ่นนักล่า", "กลิ่นเลือด", "กลิ่นเผ่าอื่น"];
       smellEvent = smells[Math.floor(Math.random() * smells.length)];
     }
 
-    // ⚔️ RIVAL EVENT
+    // ⚔️ RIVAL EVENT (ลดความเครียด)
     let rivalEvent = "ไม่มี";
-    if (Math.random() < 0.2) {
+    if (Math.random() < 0.1) {
       const rivals = ["หมาป่า", "งู", "เหยี่ยว"];
       rivalEvent = rivals[Math.floor(Math.random() * rivals.length)];
-      state.instinct += 2;
+      state.instinct += 1;
       state.activeEvent = "danger";
+    }
+
+    // 🌱 LIFE EVENT (ใหม่)
+    let lifeEvent = "";
+    if (Math.random() < 0.25) {
+      const life = [
+        "วางแผนสร้างคอกสัตว์",
+        "ทดลองปลูกพืช",
+        "สร้างที่พัก",
+        "สอนคนในเผ่า"
+      ];
+      lifeEvent = life[Math.floor(Math.random() * life.length)];
     }
 
     // =======================
@@ -163,7 +218,7 @@ app.post("/chat", async (req, res) => {
     if (state.activeEvent === "danger") {
       if (!msg.includes("หนี") && !msg.includes("ระวัง") && !msg.includes("สู้")) {
         state.trust -= 1;
-        eventEffect = "\n[เหตุการณ์] เจ้าตอบสนองช้า สถานการณ์เริ่มตึงเครียด";
+        eventEffect = "\n[เหตุการณ์] เจ้าช้าเล็กน้อย แต่ยังควบคุมได้";
       }
       state.activeEvent = null;
     }
@@ -186,6 +241,7 @@ app.post("/chat", async (req, res) => {
 [เวลา] ${state.time}
 [กลิ่น] ${smellEvent}
 [ศัตรู] ${rivalEvent}
+[ชีวิต] ${lifeEvent}
 [affection] ${state.affection}
 [trust] ${state.trust}
 [instinct] ${state.instinct}
@@ -216,22 +272,22 @@ ${SYSTEM_PROMPT}
     }
 
     // =======================
-    // ❤️ STAT SYSTEM (นิ่งขึ้น)
+    // ❤️ STAT SYSTEM (คลั่งรักขึ้น)
     // =======================
-    if (reply.includes("กอด") || reply.includes("ดึง") || reply.includes("เข้าใกล้")) {
-      state.affection += 3;
+    if (reply.includes("กอด") || reply.includes("ดึง") || reply.includes("เข้าใกล้") || reply.includes("แตะ")) {
+      state.affection += 4;
     }
 
-    if (reply.includes("ปกป้อง") || reply.includes("ไม่ปล่อย")) {
-      state.trust += 2;
+    if (reply.includes("ไม่ปล่อย") || reply.includes("อยู่ใกล้") || reply.includes("ของข้า")) {
+      state.trust += 3;
     }
 
-    if (reply.includes("จ้อง") || reply.includes("คำราม") || reply.includes("กดดัน")) {
-      state.instinct += 2;
+    if (reply.includes("จ้อง") || reply.includes("คำราม")) {
+      state.instinct += 1;
     }
 
-    // 🔥 ลด instinct อัตโนมัติ
-    if (state.instinct > 5) {
+    // 🔥 ลด instinct ทุกเทิร์น (ให้กลายเป็นหวงแทนล่า)
+    if (state.instinct > 0) {
       state.instinct -= 1;
     }
 
@@ -241,17 +297,17 @@ ${SYSTEM_PROMPT}
     state.instinct = Math.max(0, Math.min(100, state.instinct));
 
     // =======================
-    // 💥 RELATIONSHIP
+    // 💥 RELATIONSHIP (ง่ายขึ้น)
     // =======================
-    if (!state.bonded && state.affection > 15 && state.trust > 12) {
+    if (!state.bonded && state.affection > 10 && state.trust > 8) {
       state.bonded = true;
       longMemory[userId] += "\n- เกิด bond แล้ว";
     }
 
     // =======================
-    // 🤰 PREGNANCY
+    // 🤰 PREGNANCY (มาไวขึ้นนิด)
     // =======================
-    if (state.bonded && !state.pregnant && Math.random() < 0.1) {
+    if (state.bonded && !state.pregnant && Math.random() < 0.15) {
       state.pregnant = true;
       longMemory[userId] += "\n- เริ่มตั้งครรภ์";
     }
@@ -259,7 +315,7 @@ ${SYSTEM_PROMPT}
     // =======================
     // 👶 BIRTH
     // =======================
-    if (state.pregnant && Math.random() < 0.05) {
+    if (state.pregnant && Math.random() < 0.08) {
       state.pregnant = false;
 
       const child = createChild(state.children.length);
