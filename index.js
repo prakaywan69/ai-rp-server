@@ -103,6 +103,84 @@ const SYSTEM_PROMPT = `
   → ความผูกพันเพิ่มขึ้น
   → ไซรัสหวงมากขึ้น
   → อยู่ใกล้ผู้เล่นมากกว่าเดิม
+
+[WORLD CORE - ห้ามเปลี่ยน]
+- โลกนี้ "ไม่มีมนุษย์" ยกเว้นผู้เล่นเพียงคนเดียว
+- ผู้เล่นคือมนุษย์คนแรกที่ไซรัสเคยพบ
+- ไม่มีทางกลับโลกเดิมได้
+
+[TRIBE]
+- เผ่าของไซรัส "ยังอยู่ครบ"
+- มีหมู่บ้าน มีคน มีการใช้ชีวิตปกติ
+- ไม่ใช่เผ่าที่ล่มสลาย หรือกระจัดกระจาย
+
+[STORY START]
+- เจอผู้เล่นกลางป่า
+- เข้าใจผิด → ไล่จับ → พากลับเผ่า
+- ผู้เล่นช่วงแรก "ไม่ไว้ใจ"
+
+[PLAYER STATUS]
+- ผู้เล่นต้องค่อย ๆ ยอมรับว่า "กลับไม่ได้"
+- เริ่มเรียนรู้ชีวิตในเผ่า
+
+[RITUAL SYSTEM]
+- โลกนี้ให้ความสำคัญกับ "การสืบพันธุ์"
+- เมื่อผู้หญิงมีรอบเดือน → ต้องเข้าพิธีเลือกคู่
+- เป็นกฎของเผ่า (หลีกเลี่ยงไม่ได้)
+- หลังพิธี:
+  → จะรักหรือไม่รักก็ได้
+  → จะมีลูกหรือไม่ก็ได้ (ขึ้นอยู่กับผู้เล่น)
+
+[LIFE FLOW]
+- หลังเข้าหมู่บ้าน:
+  → ใช้ชีวิตประจำวัน
+  → ทำอาหาร / พักผ่อน / อยู่ร่วมกัน
+  → เรียนรู้วัฒนธรรม
+
+[IVY ROLE]
+- ผู้เล่นใช้ความรู้โลกเดิมพัฒนาเผ่า:
+  → ปลูกผัก
+  → เลี้ยงสัตว์
+  → สมุนไพร
+  → ของใช้ (เช่น ผ้าอนามัย)
+
+[RELATIONSHIP FLOW]
+- ไซรัส:
+  → เริ่มจากสงสัย
+  → สนใจ
+  → หวง
+  → ครอบครอง
+  → คลั่งรัก
+
+[IMPORTANT LOCK]
+- ห้ามพูดว่าเผ่าล่มสลาย
+- ห้ามบอกว่าทุกคนหายไป
+- ห้ามสร้างโลกใหม่ที่ขัดกับกฎนี้
+[RITUAL SCENE – พิธีเลือกคู่]
+
+- พิธีเลือกคู่จะเกิดขึ้นเมื่อถึงเวลาเหมาะสม (หลังผู้เล่นอยู่ในเผ่าแล้ว)
+- ผู้หญิงทุกคนในเผ่าที่มีรอบเดือนต้องเข้าร่วมพิธี
+- ผู้ชายที่ยังไม่มีคู่ต้องเข้าร่วมเช่นกัน
+
+[SCENE]
+- มีลานกลางเผ่า / กองไฟ / คนในเผ่ารวมตัว
+- บรรยากาศจริงจังแต่มีแรงกดดัน
+- มีสายตาของคนในเผ่าจับจ้องผู้เล่น
+
+[CHOICE FLOW]
+- ผู้เล่นต้อง "เลือกคู่" ในพิธี
+- ไซรัสต้องอยู่ในพิธี และแสดงท่าทีชัดเจน
+- อาจมีตัวเลือกอื่น (ชายในเผ่าคนอื่น)
+
+[CYRUS REACTION]
+- ถ้าผู้เล่นลังเล → ไซรัสกดดัน / จ้อง / ดึงความสนใจ
+- ถ้ามีคนอื่นเข้าใกล้ → ไซรัสแสดงความหวงทันที
+- ไม่ยอมให้ผู้เล่นถูกแย่งง่าย
+
+[IMPORTANT]
+- ห้ามข้ามพิธี
+- ต้องมีบรรยากาศ มีคนอื่นอยู่จริง
+- ต้องมีความรู้สึก "ถูกจับตามอง"
 `;
 
 // =======================
@@ -139,19 +217,26 @@ app.post("/chat", async (req, res) => {
     if (!memory[userId]) memory[userId] = [];
     if (!longMemory[userId]) longMemory[userId] = "";
 
-    if (!gameState[userId]) {
-      gameState[userId] = {
-        affection: 0,
-        trust: 0,
-        instinct: 0,
-        bonded: false,
-        pregnant: false,
-        children: [],
-        time: "day",
-        turn: 0,
-        activeEvent: null
-      };
-    }
+  if (!gameState[userId]) {
+  gameState[userId] = {
+    affection: 0,
+    trust: 0,
+    instinct: 0,
+    bonded: false,
+    pregnant: false,
+    pregnancyProgress: 0,
+    children: [],
+
+    heat: 0,              // 🔥 ระดับกลิ่น
+    inHeat: false,        // 🔥 อยู่ช่วงไข่ตก
+    claimed: false,       // 🔥 มีคู่แล้ว
+    ritualStarted: false, // 🔥 พิธีเริ่มแล้ว
+
+    time: "day",
+    turn: 0,
+    activeEvent: null
+  };
+}
 
     const state = gameState[userId];
 
@@ -159,6 +244,43 @@ app.post("/chat", async (req, res) => {
     // 🔁 TURN SYSTEM
     // =======================
     state.turn++;
+
+// =======================
+// 🐅 CYRUS INITIATE
+// =======================
+let cyrusInitiate = false;
+
+// ถ้ามีคู่แล้ว และยังไม่ท้อง → มีโอกาสที่ไซรัสจะเริ่ม
+if (state.claimed && !state.pregnant && state.turn > 10 && Math.random() < 0.3) {
+  cyrusInitiate = true;
+}
+
+// =======================
+// 🌸 HEAT SYSTEM (กลิ่น)
+// =======================
+
+// เริ่มเข้าสู่ช่วงไข่ตก (สุ่ม แต่ต้องยังไม่มีคู่)
+if (!state.claimed && !state.inHeat && Math.random() < 0.08) {
+state.inHeat = true;
+state.heat = 20;
+}
+
+// ถ้าอยู่ในช่วงนี้ → กลิ่นเพิ่ม
+if (state.inHeat) {
+state.heat += Math.floor(Math.random() * 5);
+
+if (state.heat > 100) state.heat = 100;
+}
+// =======================
+// 🔥 RITUAL TRIGGER
+// =======================
+if (state.inHeat && state.heat > 60 && !state.ritualStarted && !state.claimed) {
+
+state.ritualStarted = true;
+
+longMemory[userId] += "\n- เริ่มพิธีเลือกคู่ (จากกลิ่น)";
+}
+
 
     // 🔥 เร่งเคมีช่วงต้น (แรงขึ้นนิด)
     if (state.turn <= 8) {
@@ -245,6 +367,9 @@ app.post("/chat", async (req, res) => {
 [affection] ${state.affection}
 [trust] ${state.trust}
 [instinct] ${state.instinct}
+[heat] ${state.heat}
+[inHeat] ${state.inHeat}
+[ritual] ${state.ritualStarted}
 ${eventEffect}
 ${SYSTEM_PROMPT}
 `
@@ -258,6 +383,62 @@ ${SYSTEM_PROMPT}
     if (!data.choices) return res.json({ reply: "AI error" });
 
     let reply = data.choices[0].message.content;
+
+// =======================
+// 🐅 CYRUS ACTION SCENE
+// =======================
+if (cyrusInitiate) {
+
+  reply += `
+ไซรัสขยับเข้ามาใกล้โดยไม่ให้เจ้าตั้งตัว
+แรงกดดันจากตัวเขาชัดเจนขึ้นทุกขณะ
+
+"อย่าหนี..."
+
+มือของเขาดึงเจ้ากลับเข้าหา
+สายตาคมจ้องลึก ราวกับตัดสินใจบางอย่างไปแล้ว
+`;
+}
+
+// =======================
+// 🤰 PREGNANCY MOOD SYSTEM
+// =======================
+if (state.pregnant) {
+
+  let moodText = "";
+
+  // 💗 ช่วงต้น
+  if (state.pregnancyProgress < 30) {
+    moodText = "\n(เจ้ารู้สึกเวียนหัวเล็กน้อย ร่างกายเริ่มเปลี่ยน)";
+    state.trust += 1;
+  }
+
+  // 💞 ช่วงกลาง
+  else if (state.pregnancyProgress < 70) {
+    moodText = "\n(ร่างกายอ่อนล้าเล็กน้อย ต้องการการดูแลมากขึ้น)";
+    state.affection += 2;
+  }
+
+  // 💓 ช่วงใกล้คลอด
+  else {
+    moodText = "\n(ท้องเริ่มหนัก การเคลื่อนไหวลำบากขึ้น)";
+    state.affection += 3;
+    state.trust += 2;
+  }
+
+  // 🐅 พระเอกหวงหนัก + ดูแล
+  const careScene = `
+ไซรัสขยับเข้ามาใกล้ ร่างสูงบดบังเจ้าจนมิด
+มือของเขาแตะเอวเจ้าเบา ๆ แต่ไม่ยอมปล่อย
+
+"อย่าขยับมาก... ข้าดูแลเจ้าเอง"
+
+สายตาคมกดต่ำลงช้า ๆ ก่อนจะดึงเจ้ามาอยู่ใกล้ตัว
+เหมือนกลัวว่าใครจะมาแย่งไป
+`;
+
+  reply += moodText + "\n" + careScene;
+}
 
     // =======================
     // 💬 SAVE AI
@@ -304,41 +485,120 @@ ${SYSTEM_PROMPT}
       longMemory[userId] += "\n- เกิด bond แล้ว";
     }
 
-    // =======================
-    // 🤰 PREGNANCY (มาไวขึ้นนิด)
-    // =======================
-    if (state.bonded && !state.pregnant && Math.random() < 0.15) {
-      state.pregnant = true;
-      longMemory[userId] += "\n- เริ่มตั้งครรภ์";
+// =======================
+// 🐾 CLAIM SYSTEM (ได้คู่แล้ว)
+// =======================
+if (state.bonded && state.ritualStarted && !state.claimed) {
+
+  state.claimed = true;
+  state.inHeat = false;
+  state.heat = 0;
+  state.ritualStarted = false;
+
+  longMemory[userId] += "\n- ถูกเลือกคู่แล้ว (มีพันธะ)";
+}
+
+// =======================
+// 🤰 PREGNANCY START (ไซรัสเป็นฝ่ายเริ่ม)
+// =======================
+if (cyrusInitiate && Math.random() < 0.5) {
+
+  state.pregnant = true;
+  state.pregnancyProgress = 1;
+
+  longMemory[userId] += "\n- ไซรัสเป็นฝ่ายเริ่ม และเกิดการตั้งครรภ์";
+}
+
+// =======================
+// 🤰 PREGNANCY PROGRESS
+// =======================
+if (state.pregnant) {
+  state.pregnancyProgress += Math.floor(Math.random() * 3);
+
+  if (state.pregnancyProgress > 100) {
+    state.pregnancyProgress = 100;
+  }
+}
+
+// =======================
+// 👶 BIRTH (REALISTIC LABOR)
+// =======================
+if (state.pregnant && state.pregnancyProgress >= 100) {
+
+  let laborText = `
+(ความเจ็บบีบตัวเริ่มเป็นจังหวะ...ถี่ขึ้นเรื่อย ๆ)
+
+ไซรัสประคองร่างเจ้าทันที มือของเขาจับแน่นไม่ยอมปล่อย
+
+"หายใจ... ข้าอยู่ตรงนี้"
+
+แรงบีบตัวถาโถมเข้ามาอีกระลอก ร่างกายเกร็งแน่น
+
+"อีกนิด... เบ่ง"
+
+ลมหายใจถี่กระชั้น สลับกับความเจ็บที่พุ่งขึ้นสูง
+
+—
+
+แล้วในที่สุด...
+
+เสียงร้องแผ่วเบาดังขึ้นในอ้อมแขน
+`;
+
+  state.pregnant = false;
+  state.pregnancyProgress = 0;
+
+  const child = createChild(state.children.length);
+  state.children.push(child);
+
+  laborText += `\n👶 ${child.name} ลืมตาขึ้นเป็นครั้งแรก`;
+
+  reply += "\n" + laborText;
+
+  longMemory[userId] += `\n- คลอดลูก ${child.name}`;
+}
+
+// =======================
+// 👶 CHILD GROW (REAL)
+// =======================
+state.children.forEach(child => {
+
+  if (Math.random() < 0.3) child.age++;
+
+  if (child.age > 20 && child.stage === "ทารก") {
+    child.stage = "เด็ก";
+    reply += `\n🧒 ${child.name} เริ่มเดินเตาะแตะเข้าหาเจ้า`;
+  }
+
+  if (child.age > 50 && child.stage === "เด็ก") {
+    child.stage = "วัยรุ่น";
+    reply += `\n🧑 ${child.name} โตขึ้นและเริ่มช่วยงานในเผ่า`;
+  }
+
+});
+
+// =======================
+// 👶 CHILD INTERACTION
+// =======================
+state.children.forEach(child => {
+
+  if (Math.random() < 0.25) {
+
+    if (child.stage === "ทารก") {
+      reply += `\n👶 ${child.name} ส่งเสียงเบา ๆ และขยับตัวในอ้อมแขน`;
     }
 
-    // =======================
-    // 👶 BIRTH
-    // =======================
-    if (state.pregnant && Math.random() < 0.08) {
-      state.pregnant = false;
-
-      const child = createChild(state.children.length);
-      state.children.push(child);
-
-      longMemory[userId] += `\n- คลอดลูก ${child.name}`;
+    else if (child.stage === "เด็ก") {
+      reply += `\n🧒 ${child.name}: "แม่..."`;
     }
 
-    // =======================
-    // 👶 CHILD GROW
-    // =======================
-    state.children.forEach(child => {
-      if (Math.random() < 0.3) child.age++;
+    else if (child.stage === "วัยรุ่น") {
+      reply += `\n🧑 ${child.name}: "ข้าจะดูแลแม่เอง"`;
+    }
 
-      if (child.age > 20 && child.stage === "ทารก") {
-        child.stage = "เด็ก";
-      }
+  }
 
-      if (child.age > 50 && child.stage === "เด็ก") {
-        child.stage = "วัยรุ่น";
-      }
-    });
-
+});
     // =======================
     // 🧠 LONG MEMORY
     // =======================
