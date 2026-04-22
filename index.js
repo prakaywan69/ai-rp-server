@@ -244,6 +244,9 @@ app.post("/chat", async (req, res) => {
     // 🔁 TURN SYSTEM
     // =======================
     state.turn++;
+if (state.turn > 5) {
+  state.affection += 1;
+}
 
 // =======================
 // 🐅 CYRUS INITIATE
@@ -455,9 +458,20 @@ if (state.pregnant) {
     // =======================
     // ❤️ STAT SYSTEM (คลั่งรักขึ้น)
     // =======================
-    if (reply.includes("กอด") || reply.includes("ดึง") || reply.includes("เข้าใกล้") || reply.includes("แตะ")) {
-      state.affection += 4;
-    }
+if (
+  reply.includes("กอด") ||
+  reply.includes("ดึง") ||
+  reply.includes("เข้าใกล้") ||
+  reply.includes("แตะ") ||
+  reply.includes("หอม") ||
+  reply.includes("จูบ") ||
+  reply.includes("แนบ") ||
+  reply.includes("สัมผัส") ||
+  reply.includes("เขิน")
+) {
+  state.affection += 4;
+}
+
 
     if (reply.includes("ไม่ปล่อย") || reply.includes("อยู่ใกล้") || reply.includes("ของข้า")) {
       state.trust += 3;
