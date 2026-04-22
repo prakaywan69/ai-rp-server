@@ -656,6 +656,21 @@ app.post("/regen", (req, res) => {
 });
 
 // =======================
+// 🗑️ RESET GAME
+// =======================
+app.post("/reset", (req, res) => {
+  const userId = req.body.userId || "default";
+
+  delete memory[userId];
+  delete longMemory[userId];
+  delete gameState[userId];
+
+  saveGame();
+
+  res.json({ success: true });
+});
+
+// =======================
 app.get("/", (req, res) => {
   res.send("AI RP Server is running");
 });
