@@ -1078,16 +1078,21 @@ if (longMemory[userId].length > 5000) {
 }
 
 // =======================
-// 💾 SAVE + RESPONSE (สำคัญมาก)
+// 💾 SAVE + RESPONSE (ส่งค่ากลับ)
 // =======================
 saveGame();
-res.json({ reply });
+
+res.json({
+  reply,
+  state
+});
 
 } catch (err) {
   console.error(err);
   res.status(500).json({ error: "Server error" });
 }
 });
+
 
 // =======================
 // 🔙 UNDO
