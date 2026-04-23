@@ -526,6 +526,7 @@ const SYSTEM_PROMPT = `
 "เจ้ามาที่นี่ได้ยังไง"
 "เจ้ามาเองรึ"
 `;
+
 // =======================
 // 💾 LOAD SAVE
 // =======================
@@ -705,7 +706,8 @@ if (state.activeEvent === "danger") {
 
   state.activeEvent = null;
 }
-// =======================
+
+ // =======================
 // 🧠 AI CALL
 // =======================
 const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -812,6 +814,7 @@ if (state.pregnant) {
   reply += moodText + "\n" + careScene;
 }
 
+
     // =======================
     // 💬 SAVE AI
     // =======================
@@ -888,6 +891,7 @@ if (state.bonded && state.ritualStarted && !state.claimed) {
 
   longMemory[userId] += "\n- ถูกเลือกคู่แล้ว (มีพันธะ)";
 }
+
 // =======================
 // 🤰 PREGNANCY START (ไซรัสเป็นฝ่ายเริ่ม)
 // =======================
@@ -1161,6 +1165,12 @@ app.listen(PORT, () => {
 
 
     
+
+
+
+
+
+
 
 
 
