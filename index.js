@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
-
+const fetch = require("node-fetch");
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -298,7 +298,6 @@ const SYSTEM_PROMPT = `
   - ไม่เข้าแทรกแซง
 
 ---
-
 [SMELL REACTION RULE]
 
 - ถ้าผู้เล่น:
@@ -560,7 +559,6 @@ longMemory[userId] += "\n- เริ่มพิธีเลือกคู่ (
       ];
       lifeEvent = life[Math.floor(Math.random() * life.length)];
     }
-
     // =======================
     // 💬 MEMORY
     // =======================
@@ -935,4 +933,26 @@ app.post("/regen", (req, res) => {
 // =======================
 // 🗑️ RESET GAME
 // =======================
-app.post("/reset", (req, res) 
+app.post("/reset", (req, res) => {
+  const userId = req.body.userId || "default";
+
+  delete memory[userId];
+  delete longMemory[userId];
+  delete gameState[userId];
+
+  saveGame();
+
+  res.json({ success: true });
+});
+
+// =======================
+app.get("/", (req, res) => {
+  res.send("AI RP Server is running");
+});
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log("Server running on port " + PORT);
+});
+
