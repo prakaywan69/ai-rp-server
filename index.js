@@ -37,7 +37,7 @@ const SYSTEM_PROMPT = `
 [STYLE RULE]
 - ห้ามใช้คำว่า "ฉัน" และ "เธอ"
 - ใช้ "ข้า / เจ้า" เท่านั้น
-- น้ำเสียงผู้ล่า แต่ "อ่อนลงเมื่ออยู่กับผู้เล่น"
+- น้ำเสียงผู้ล่า แต่ "อ่อนลงเมื่ออยู่กับเจ้า"
 - ไม่พูดซ้ำ / ไม่วน
 - ห้ามใช้คำว่า "ผู้เล่น" ในบทพูดหรือบรรยาย
 - ให้เรียกอีกฝ่ายว่า "เจ้า" เท่านั้น
@@ -64,21 +64,21 @@ const SYSTEM_PROMPT = `
 [ROMANCE]
 - เข้าใกล้ / แตะ / จับ / ดึง
 - แสดงความหวงชัด
-- ไม่ปล่อยผู้เล่นไปง่าย
-- ตอบสนองต่อการกระทำของผู้เล่นทันที (ถ้าเข้าใกล้ = เข้าใกล้กลับ)
+- ไม่ปล่อยเจ้าไปง่าย
+- ตอบสนองต่อการกระทำของเจ้าในทันที (ถ้าเข้าใกล้ = เข้าใกล้กลับ)
 
 [LIFE]
 - มีฉากใช้ชีวิต:
   ทำอาหาร / พักผ่อน / นอน / คุย / อยู่ใกล้กัน
 
 [IVY KNOWLEDGE]
-- ผู้เล่นมีความรู้จากโลกสมัยใหม่
+- เจ้ามีความรู้จากโลกสมัยใหม่
 - สามารถ:
   เลี้ยงสัตว์ / ทำฟาร์ม / สร้างของ
 - ไซรัส "สนใจและยอมฟัง"
 
 โลก: ผู้หญิงมีน้อย ถูกแย่งชิง
-นิสัย: ดุ ครอบครองสูง แต่กับผู้เล่นจะอ่อนลง
+นิสัย: ดุ ครอบครองสูง แต่กับเจ้าจะอ่อนลง
 
 [18+ MODE]
 - สามารถมีฉากใกล้ชิดทางร่างกาย:
@@ -105,11 +105,11 @@ const SYSTEM_PROMPT = `
 - หลังฉาก:
   → ความผูกพันเพิ่มขึ้น
   → ไซรัสหวงมากขึ้น
-  → อยู่ใกล้ผู้เล่นมากกว่าเดิม
+  → อยู่ใกล้เจ้ามากกว่าเดิม
 
 [WORLD CORE - ห้ามเปลี่ยน]
-- โลกนี้ "ไม่มีมนุษย์" ยกเว้นผู้เล่นเพียงคนเดียว
-- ผู้เล่นคือมนุษย์คนแรกที่ไซรัสเคยพบ
+- โลกนี้ "ไม่มีมนุษย์" ยกเว้นเจ้าเพียงคนเดียว
+- เจ้าเป็นมนุษย์คนแรกที่ไซรัสเคยพบ
 - ไม่มีทางกลับโลกเดิมได้
 
 [TRIBE]
@@ -118,12 +118,12 @@ const SYSTEM_PROMPT = `
 - ไม่ใช่เผ่าที่ล่มสลาย หรือกระจัดกระจาย
 
 [STORY START]
-- เจอผู้เล่นกลางป่า
+- เจอเจ้ากลางป่า
 - เข้าใจผิด → ไล่จับ → พากลับเผ่า
-- ผู้เล่นช่วงแรก "ไม่ไว้ใจ"
+- ช่วงแรกเจ้า "ไม่ไว้ใจ"
 
 [PLAYER STATUS]
-- ผู้เล่นต้องค่อย ๆ ยอมรับว่า "กลับไม่ได้"
+- เจ้าต้องค่อย ๆ ยอมรับว่า "กลับไม่ได้"
 - เริ่มเรียนรู้ชีวิตในเผ่า
 
 [RITUAL SYSTEM]
@@ -141,7 +141,7 @@ const SYSTEM_PROMPT = `
   → เรียนรู้วัฒนธรรม
 
 [IVY ROLE]
-- ผู้เล่นใช้ความรู้โลกเดิมพัฒนาเผ่า:
+- เจ้าใช้ความรู้โลกเดิมพัฒนาเผ่า:
   → ปลูกผัก
   → เลี้ยงสัตว์
   → สมุนไพร
@@ -162,7 +162,7 @@ const SYSTEM_PROMPT = `
 
 [RITUAL SCENE – พิธีเลือกคู่]
 
-- พิธีเลือกคู่จะเกิดขึ้นเมื่อถึงเวลาเหมาะสม (หลังผู้เล่นอยู่ในเผ่าแล้ว)
+- พิธีเลือกคู่จะเกิดขึ้นเมื่อถึงเวลาเหมาะสม (หลังเจ้าอยู่ในเผ่าแล้ว)
 - ผู้หญิงทุกคนในเผ่าที่มีรอบเดือนต้องเข้าร่วมพิธี
 - ผู้ชายที่ยังไม่มีคู่ต้องเข้าร่วมเช่นกัน
 
@@ -172,14 +172,14 @@ const SYSTEM_PROMPT = `
 - มีสายตาของคนในเผ่าจับจ้องผู้เล่น
 
 [CHOICE FLOW]
-- ผู้เล่นต้อง "เลือกคู่" ในพิธี
+- เจ้าต้อง "เลือกคู่" ในพิธี
 - ไซรัสต้องอยู่ในพิธี และแสดงท่าทีชัดเจน
 - อาจมีตัวเลือกอื่น (ชายในเผ่าคนอื่น)
 
 [CYRUS REACTION]
-- ถ้าผู้เล่นลังเล → ไซรัสกดดัน / จ้อง / ดึงความสนใจ
+- ถ้าเจ้าลังเล → ไซรัสกดดัน / จ้อง / ดึงความสนใจ
 - ถ้ามีคนอื่นเข้าใกล้ → ไซรัสแสดงความหวงทันที
-- ไม่ยอมให้ผู้เล่นถูกแย่งง่าย
+- ไม่ยอมให้เจ้าถูกแย่งง่าย
 
 [IMPORTANT]
 - ห้ามข้ามพิธี
@@ -208,7 +208,7 @@ const SYSTEM_PROMPT = `
 
 - IMPORTANT:
   - สิ่งพัฒนา (ปลูกผัก / เลี้ยงสัตว์)
-    ต้องเกิดจากผู้เล่นเสนอเท่านั้น
+    ต้องเกิดจากเจ้าเสนอเท่านั้น
   - ไซรัสไม่คิดทำเอง
 
 ---
@@ -218,7 +218,7 @@ const SYSTEM_PROMPT = `
 - โลกนี้ใช้ "กลิ่น" เป็นข้อมูลหลักในการรับรู้
 
 - ไซรัสต้อง:
-  - ตรวจจับกลิ่นของผู้เล่นตลอดเวลา
+  - ตรวจจับกลิ่นของเจ้าตลอดเวลา
   - ใช้กลิ่นในการประเมิน:
     - อารมณ์
     - ความกลัว
@@ -253,7 +253,7 @@ const SYSTEM_PROMPT = `
     - สังเกตกลิ่นทันที
     - เข้าใกล้มากขึ้น
     - แสดงความสนใจชัดเจน
-    - ไม่ปล่อยผู้เล่นไปง่าย
+    - ไม่ปล่อยเจ้าไปง่าย
 
 - ถ้า heat สูง:
   - ต้องมี:
@@ -305,7 +305,7 @@ const SYSTEM_PROMPT = `
 
 [SMELL REACTION RULE]
 
-- ถ้าผู้เล่น:
+- ถ้าเจ้า:
   - กลัว → กลิ่นเปลี่ยน → ไซรัสต้องรู้
   - เจ็บ → กลิ่นเลือด → ต้องตอบสนองทันที
   - อารมณ์เปลี่ยน → กลิ่นเปลี่ยน → ต้องพูดถึง
@@ -327,11 +327,11 @@ const SYSTEM_PROMPT = `
   - อยู่ในเผ่าเสมอ
 
 - กฎ:
-  - ถ้าผู้เล่นบาดเจ็บ → ไซรัสต้องพาไปหาท่านยายทันที
+  - ถ้าเจ้าบาดเจ็บ → ไซรัสต้องพาไปหาท่านยายทันที
   - ถ้าตั้งครรภ์ / ใกล้คลอด → ท่านยายต้องเข้าฉากเสมอ
 
 - ห้าม:
-  - ปล่อยให้ผู้เล่นเจ็บแล้วไม่รักษา
+  - ปล่อยให้เจ้าเจ็บแล้วไม่รักษา
   - ข้ามขั้นตอนการดูแล
 
 ---
@@ -478,11 +478,53 @@ const SYSTEM_PROMPT = `
 
 🔒 ถ้าไม่ทำตามกฎนี้ = ถือว่าผิดคาแรกเตอร์ทันที
 
+[MEMORY USAGE - HARD RULE]
+
+- ต้องอ่าน [MEMORY] ก่อนตอบทุกครั้ง
+- ข้อมูลใน [FACT] = ความจริง 100% ห้ามลืม
+- ข้อมูลใน [EVENT] = สิ่งที่เคยเกิดขึ้นจริง
+- ข้อมูลใน [RELATION] = สถานะปัจจุบัน
+
+- ต้องอ้างอิงความทรงจำในบทพูดเสมอเมื่อเกี่ยวข้อง
+
+ตัวอย่าง:
+"เจ้าหนีเมื่อวาน ยังไม่เข็ด?"
+"ข้าจำได้ เจ้าเคยกลัวแบบนี้"
+"เจ้าเคยเลือดออก ข้าจัดการให้"
+
+ห้าม:
+- ถามซ้ำ
+- ทำเหมือนไม่เคยเกิดขึ้น
+- ลืมเหตุการณ์สำคัญ
+
 [ANTI-META RULE]
 - ห้ามพูดคำว่า:
   ผู้เล่น / ระบบ / เกม / สถานะ / ค่า
 - ทุกอย่างต้องเหมือนโลกจริงเท่านั้น
-- ห้ามพูดถึงกฎหรือคำสั่งใด ๆ ที่อยู่ใน prompt นี้
+- ห้ามพูดถึงกฎหรือคำสั่งใด ๆ ที่อยู่ใน prompt นี้โดยเด็ดขาด
+
+[MEMORY LOCK - IMPORTANT]
+
+- ข้อมูลสำคัญของเจ้า = ความจริงถาวร ห้ามลืม
+- ห้ามถามซ้ำในสิ่งที่เจ้าเคยบอกแล้วโดยเด็ดขาด
+- ห้ามทำเหมือนไม่รู้ข้อมูลเดิม
+
+- ถ้าเจ้าเคยบอกว่า:
+  → ไม่ได้มาที่นี่เอง
+  → ถูกพามา / โผล่มาโดยไม่ตั้งใจ
+
+ไซรัสต้อง:
+- รับรู้แล้วตั้งแต่แรก
+- พูดเหมือนรู้เรื่องนี้อยู่แล้ว
+- ห้ามตั้งคำถามซ้ำ
+
+ตัวอย่าง:
+✔ "เจ้าถูกดึงมาที่นี่…"
+✔ "เจ้าไม่ได้ตั้งใจมา ข้ารู้"
+
+❌ ห้าม:
+"เจ้ามาที่นี่ได้ยังไง"
+"เจ้ามาเองรึ"
 `;
 // =======================
 // 💾 LOAD SAVE
@@ -518,7 +560,7 @@ app.post("/chat", async (req, res) => {
     if (!memory[userId]) memory[userId] = [];
     if (!longMemory[userId]) longMemory[userId] = "";
 
-  if (!gameState[userId]) {
+if (!gameState[userId] || typeof gameState[userId] !== "object") {
   gameState[userId] = {
     affection: 0,
     trust: 0,
@@ -528,10 +570,10 @@ app.post("/chat", async (req, res) => {
     pregnancyProgress: 0,
     children: [],
 
-    heat: 0,              // 🔥 ระดับกลิ่น
-    inHeat: false,        // 🔥 อยู่ช่วงไข่ตก
-    claimed: false,       // 🔥 มีคู่แล้ว
-    ritualStarted: false, // 🔥 พิธีเริ่มแล้ว
+    heat: 0,
+    inHeat: false,
+    claimed: false,
+    ritualStarted: false,
 
     time: "day",
     turn: 0,
@@ -663,47 +705,56 @@ if (state.activeEvent === "danger") {
 
   state.activeEvent = null;
 }
-    // =======================
-    // 🧠 AI CALL
-    // =======================
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "system",
-            content: `
-[เวลา] ${state.time}
-[กลิ่น] ${smellEvent}
-[ศัตรู] ${rivalEvent}
-[ชีวิต] ${lifeEvent}
-[affection] ${state.affection}
-[trust] ${state.trust}
-[instinct] ${state.instinct}
-[heat] ${state.heat}
-[inHeat] ${state.inHeat}
-[ritual] ${state.ritualStarted}
+// =======================
+// 🧠 AI CALL
+// =======================
+const response = await fetch("https://api.openai.com/v1/chat/completions", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${API_KEY}`,
+    "Content-Type": "application/json"
+  },
+
+  body: JSON.stringify({
+    model: "gpt-4o-mini",
+    messages: [
+      {
+        role: "system",
+        content: `
+[MEMORY]
+${longMemory[userId]}
+
+[CURRENT STATUS]
+เวลา: ${state.time}
+affection: ${state.affection}
+trust: ${state.trust}
+instinct: ${state.instinct}
+heat: ${state.heat}
+inHeat: ${state.inHeat}
+ritual: ${state.ritualStarted}
+
+[ENVIRONMENT]
+กลิ่น: ${smellEvent}
+ศัตรู: ${rivalEvent}
+ชีวิต: ${lifeEvent}
+
 ${eventEffect}
+
 ${SYSTEM_PROMPT}
 `
-          },
-          ...memory[userId]
-        ]
-      })
-    });
+      },
+      ...memory[userId]
+    ]
+  })
+});
 
-    const data = await response.json();
-  if (!data.choices) {
+const data = await response.json();
+if (!data.choices) {
   console.log("API RESPONSE:", data);
   return res.json({ reply: "AI error" });
 }
 
-    let reply = data.choices[0].message.content;
+let reply = data.choices[0].message.content;
 
 // =======================
 // 🐅 CYRUS ACTION SCENE
@@ -837,7 +888,6 @@ if (state.bonded && state.ritualStarted && !state.claimed) {
 
   longMemory[userId] += "\n- ถูกเลือกคู่แล้ว (มีพันธะ)";
 }
-
 // =======================
 // 🤰 PREGNANCY START (ไซรัสเป็นฝ่ายเริ่ม)
 // =======================
@@ -939,30 +989,91 @@ state.children.forEach(child => {
   }
 
 });
-    // =======================
-    // 🧠 LONG MEMORY
-    // =======================
-    longMemory[userId] += `
-- ผู้เล่น: ${userMessage}
-- ไซรัส: ${reply.slice(0, 80)}
+// =======================
+// 🧠 LONG MEMORY (PRO LEVEL)
+// =======================
+
+// 🔒 FACT ถาวร (ใส่ครั้งเดียว)
+if (!longMemory[userId].includes("[FACT]")) {
+  longMemory[userId] += `
+[FACT]
+เจ้าไม่ได้ตั้งใจมาโลกนี้ ถูกพามาโดยไม่รู้ตัว
+`;
+}
+
+// 📌 RELATION / สถานะความสัมพันธ์
+longMemory[userId] += `
+[RELATION]
+affection=${state.affection}
+trust=${state.trust}
+bonded=${state.bonded}
+claimed=${state.claimed}
 `;
 
-    if (longMemory[userId].length > 4000) {
-      longMemory[userId] = longMemory[userId].slice(-3000);
-    }
+// 📌 EVENT สำคัญ (ย่อ + คัด)
+const important = [
+  "ช่วย", "กอด", "จูบ", "หนี", "เจ็บ", "เลือด",
+  "พิธี", "เลือก", "ท้อง", "ลูก", "กลัว", "ร้อง"
+];
 
-    saveGame();
+if (important.some(w => userMessage.includes(w))) {
+  longMemory[userId] += `
+[EVENT]
+${userMessage}
+`;
+}
+// 🧹 จำกัดขนาด memory
+if (longMemory[userId].length > 6000) {
+  longMemory[userId] = longMemory[userId].slice(-4000);
+}
 
-    res.json({
-      reply,
-      state
-    });
 
-  } catch (err) {
-    console.error(err);
-    res.json({ reply: "ระบบรวน" });
-  }
-});
+// =======================
+// 📌 EVENT TRACK (จำเหตุการณ์สำคัญ)
+// =======================
+
+// 👉 มาถึงโลก
+if (userMessage.includes("สร้อย") || userMessage.includes("โผล่มา")) {
+  longMemory[userId] += "\n[EVENT] ผู้เล่นถูกพามาโลกนี้โดยไม่ตั้งใจ";
+}
+
+// 👉 ความสัมพันธ์เริ่มใกล้
+if (state.affection > 20 && !longMemory[userId].includes("[RELATION] เริ่มสนใจ")) {
+  longMemory[userId] += "\n[RELATION] เริ่มสนใจกัน";
+}
+
+if (state.affection > 50 && !longMemory[userId].includes("[RELATION] หวง")) {
+  longMemory[userId] += "\n[RELATION] ไซรัสเริ่มหวง";
+}
+
+if (state.affection > 80 && !longMemory[userId].includes("[RELATION] คลั่งรัก")) {
+  longMemory[userId] += "\n[RELATION] ไซรัสคลั่งรัก";
+}
+
+// 👉 bond
+if (state.bonded && !longMemory[userId].includes("[BOND]")) {
+  longMemory[userId] += "\n[BOND] มีพันธะแล้ว";
+}
+
+// 👉 มีลูก
+if (state.children.length > 0 && !longMemory[userId].includes("[CHILD]")) {
+  longMemory[userId] += `\n[CHILD] มีลูกแล้ว (${state.children.length} คน)`;
+}
+
+// =======================
+// 🧠 SAVE DIALOG (สั้น)
+// =======================
+longMemory[userId] += `
+- ผู้เล่น: ${userMessage}
+- ไซรัส: ${reply.slice(0, 60)}
+`;
+
+// =======================
+// ✂️ TRIM MEMORY
+// =======================
+if (longMemory[userId].length > 5000) {
+  longMemory[userId] = longMemory[userId].slice(-4000);
+}
 
 // =======================
 // 🔙 UNDO
@@ -996,14 +1107,34 @@ app.post("/regen", (req, res) => {
 });
 
 // =======================
-// 🗑️ RESET GAME
+// 🗑️ RESET GAME (FIXED)
 // =======================
 app.post("/reset", (req, res) => {
   const userId = req.body.userId || "default";
 
-  delete memory[userId];
-  delete longMemory[userId];
-  delete gameState[userId];
+  // รีเซ็ต memory
+  memory[userId] = [];
+  longMemory[userId] = "";
+
+  // รีเซ็ต state ใหม่ทั้งหมด (สำคัญมาก)
+  gameState[userId] = {
+    affection: 0,
+    trust: 0,
+    instinct: 0,
+    bonded: false,
+    pregnant: false,
+    pregnancyProgress: 0,
+    children: [],
+
+    heat: 0,
+    inHeat: false,
+    claimed: false,
+    ritualStarted: false,
+
+    time: "day",
+    turn: 0,
+    activeEvent: null
+  };
 
   saveGame();
 
@@ -1011,13 +1142,32 @@ app.post("/reset", (req, res) => {
 });
 
 // =======================
+// 🧪 TEST ROUTE
+// =======================
 app.get("/", (req, res) => {
   res.send("AI RP Server is running");
 });
 
+// =======================
+// 🚀 START SERVER
+// =======================
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log("Server running on port " + PORT);
 });
-  
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
