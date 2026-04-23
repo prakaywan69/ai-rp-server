@@ -1,5 +1,4 @@
 const express = require("express");
-const fetch = require("node-fetch");
 const cors = require("cors");
 const fs = require("fs");
 
@@ -636,7 +635,10 @@ ${SYSTEM_PROMPT}
     });
 
     const data = await response.json();
-    if (!data.choices) return res.json({ reply: "AI error" });
+  if (!data.choices) {
+  console.log("API RESPONSE:", data);
+  return res.json({ reply: "AI error" });
+}
 
     let reply = data.choices[0].message.content;
 
@@ -933,5 +935,4 @@ app.post("/regen", (req, res) => {
 // =======================
 // 🗑️ RESET GAME
 // =======================
-app.post("/reset", (req, res) => {
-    
+app.post("/reset", (req, res) 
